@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
+import useTheme from '@/contexts/useTheme';
 
 interface FloatingMoleculesProps {
     count?: number;
@@ -13,14 +14,32 @@ interface FloatingMoleculesProps {
 
 const FloatingMolecules: React.FC<FloatingMoleculesProps> = ({
     count = 10,
-    color = '#00ffff',
-    secondaryColor = '#ff00ff',
+    color,
+    secondaryColor,
     speed = 0.5,
     backgroundColor = 'transparent',
     minSize = 60,
     maxSize = 200
 }) => {
     const [blurBalls, setBlurBalls] = useState<React.ReactNode[]>([]);
+    const { currentTheme } = useTheme();
+
+    // Default colors based on the current theme if not provided
+    const getThemeColor = (cssVar: string) => {
+        // Extract the color name from CSS variable format
+        const colorName = cssVar.replace('text-', '');
+        if (colorName === 'blue-400') return '#60a5fa';
+        if (colorName === 'purple-400') return '#c084fc';
+        if (colorName === 'emerald-400') return '#34d399';
+        if (colorName === 'red-400') return '#f87171';
+        if (colorName === 'amber-400') return '#fbbf24';
+        if (colorName === 'teal-400') return '#2dd4bf';
+        // Return a default color if not found
+        return '#60a5fa';
+    };
+
+    const primaryColor = color || getThemeColor(currentTheme.iconColor);
+    const secondaryThemeColor = secondaryColor || getThemeColor(currentTheme.accent.split(' ')[0].replace('from-', ''));
 
     // Generate random position within viewport bounds
     const getRandomPosition = useCallback(() => {
@@ -41,7 +60,7 @@ const FloatingMolecules: React.FC<FloatingMoleculesProps> = ({
         const size = Math.random() * (maxSize - minSize) + minSize;
 
         // Random color (either primary or secondary)
-        const ballColor = Math.random() > 0.5 ? color : secondaryColor;
+        const ballColor = Math.random() > 0.5 ? primaryColor : secondaryThemeColor;
 
         // Random opacity for varied blur effect
         const opacity = 0.1 + Math.random() * 0.3;
@@ -56,14 +75,14 @@ const FloatingMolecules: React.FC<FloatingMoleculesProps> = ({
         const animate = {
             x: [
                 initialPosition.x,
-                `${parseFloat(initialPosition.x) + (Math.random() - 0.5) * 30}vw`,
-                `${parseFloat(initialPosition.x) + (Math.random() - 0.5) * 20}vw`,
+                `${parseFloat(initialPosition.x as string) + (Math.random() - 0.5) * 30}vw`,
+                `${parseFloat(initialPosition.x as string) + (Math.random() - 0.5) * 20}vw`,
                 initialPosition.x
             ],
             y: [
                 initialPosition.y,
-                `${parseFloat(initialPosition.y) + (Math.random() - 0.5) * 30}vh`,
-                `${parseFloat(initialPosition.y) + (Math.random() - 0.5) * 20}vh`,
+                `${parseFloat(initialPosition.y as string) + (Math.random() - 0.5) * 30}vh`,
+                `${parseFloat(initialPosition.y as string) + (Math.random() - 0.5) * 20}vh`,
                 initialPosition.y
             ],
             scale: [
@@ -100,16 +119,16 @@ const FloatingMolecules: React.FC<FloatingMoleculesProps> = ({
                 }}
             />
         );
-    }, [color, secondaryColor, minSize, maxSize, getRandomPosition, getRandomDuration]);
+    }, [primaryColor, secondaryThemeColor, minSize, maxSize, getRandomPosition, getRandomDuration]);
 
-    // Generate all blur balls on component mount
+    // Generate all blur balls on component mount or when theme changes
     useEffect(() => {
         const balls = [];
         for (let i = 0; i < count; i++) {
             balls.push(createBlurBall(i));
         }
         setBlurBalls(balls);
-    }, [count, createBlurBall]);
+    }, [count, createBlurBall, currentTheme]); // Added currentTheme dependency
 
     return (
         <div

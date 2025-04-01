@@ -2,31 +2,43 @@ import { useRef } from "react";
 import { motion, useInView } from 'motion/react';
 import { Target } from 'lucide-react';
 import { userData, fadeInUpVariants, fadeInVariants, impactBreakdown } from '@/assets/data';
+import useTheme from "@/contexts/useTheme";
 
 const SkillsSection = () => {
     const ref = useRef(null);
     const inView = useInView(ref, { once: false, amount: 0.2 });
+    const { currentTheme } = useTheme();
 
     return (
         <motion.section
             ref={ref}
-            className="py-24 bg-gradient-to-b from-slate-900 to-slate-800 overflow-hidden relative pt-24"
+            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} overflow-hidden relative pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
         >
-            {/* Decorative molecules in background */}
+            {/* Decorative molecular structure in background */}
             <div className="absolute inset-0 pointer-events-none opacity-5">
-                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <svg width="100%" height="100%" viewBox="0 0 200 100" preserveAspectRatio="true">
                     <defs>
-                        <pattern id="hexagons" width="50" height="43.4" patternUnits="userSpaceOnUse" patternTransform="scale(0.5)">
-                            <polygon points="24.8,22 37.3,29.2 37.3,43.7 24.8,50.9 12.3,43.7 12.3,29.2" fill="none" stroke="#fff" strokeWidth="1"></polygon>
-                            <polygon points="24.8,0 37.3,7.3 37.3,21.7 24.8,29 12.3,21.7 12.3,7.3" fill="none" stroke="#fff" strokeWidth="1"></polygon>
-                            <polygon points="0,22 12.5,29.2 12.5,43.7 0,50.9 -12.5,43.7 -12.5,29.2" fill="none" stroke="#fff" strokeWidth="1"></polygon>
-                            <polygon points="49.6,22 62.1,29.2 62.1,43.7 49.6,50.9 37.1,43.7 37.1,29.2" fill="none" stroke="#fff" strokeWidth="1"></polygon>
+                        <pattern id="molecules" width="60" height="40" patternUnits="userSpaceOnUse" patternTransform="scale(0.6)">
+                            {/* Small circles representing atoms */}
+                            <circle cx="10" cy="10" r="2" fill="none" stroke="#fff" strokeWidth="0.8" />
+                            <circle cx="30" cy="10" r="2" fill="none" stroke="#fff" strokeWidth="0.8" />
+                            <circle cx="20" cy="25" r="2" fill="none" stroke="#fff" strokeWidth="0.8" />
+                            <circle cx="10" cy="40" r="2" fill="none" stroke="#fff" strokeWidth="0.8" />
+                            <circle cx="30" cy="40" r="2" fill="none" stroke="#fff" strokeWidth="0.8" />
+
+                            {/* Lines representing bonds */}
+                            <line x1="10" y1="10" x2="30" y2="10" stroke="#fff" strokeWidth="0.5" />
+                            <line x1="10" y1="10" x2="20" y2="25" stroke="#fff" strokeWidth="0.5" />
+                            <line x1="30" y1="10" x2="20" y2="25" stroke="#fff" strokeWidth="0.5" />
+                            <line x1="20" y1="25" x2="10" y2="40" stroke="#fff" strokeWidth="0.5" />
+                            <line x1="20" y1="25" x2="30" y2="40" stroke="#fff" strokeWidth="0.5" />
+                            <line x1="10" y1="40" x2="30" y2="40" stroke="#fff" strokeWidth="0.5" />
                         </pattern>
                     </defs>
-                    <rect width="100%" height="100%" fill="url(#hexagons)"></rect>
+                    <rect width="100%" height="100%" fill="url(#molecules)"></rect>
                 </svg>
             </div>
 
@@ -57,7 +69,7 @@ const SkillsSection = () => {
                                 </div>
                                 <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
                                     <motion.div
-                                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"
+                                        className={`absolute inset-y-0 left-0 bg-gradient-to-r ${currentTheme.buttonGradient} rounded-full`}
                                         initial={{ width: 0 }}
                                         animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
                                         transition={{ duration: 1, delay: 0.2 + index * 0.1 }}
@@ -75,7 +87,7 @@ const SkillsSection = () => {
                     >
                         <div className="bg-slate-800/80 backdrop-blur-lg p-6 border border-slate-700">
                             <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-                                <Target size={20} className="text-blue-400" />
+                                <Target size={20} className={currentTheme.iconColor} />
                                 Impact Breakdown
                             </h3>
 
@@ -106,7 +118,7 @@ const SkillsSection = () => {
 
                             <div className="mt-8 p-4 bg-slate-900/50 rounded-lg border border-slate-700">
                                 <div className="text-center">
-                                    <div className="text-4xl font-bold text-blue-400 mb-1">{userData.impactScore}</div>
+                                    <div className={`text-4xl font-bold ${currentTheme.iconColor} mb-1`}>{userData.impactScore}</div>
                                     <div className="text-slate-300 text-sm">Total Impact Score</div>
                                     <div className="text-blue-300 text-xs mt-1">Top 5% in Medicinal Chemistry</div>
                                 </div>

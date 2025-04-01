@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Button } from "../ui/button";
 import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import useTheme from "@/contexts/useTheme";
 import {
     Mouse,
     ArrowDown,
@@ -15,12 +16,14 @@ import {
     UserPlus,
     Mail,
 } from 'lucide-react';
+import ThemeSelector from "../ThemeSelector";
 
 const HeroSection = () => {
     // Create a client-side only flag
     const [isClient, setIsClient] = useState(false);
     const { scrollY } = useScroll();
     const ref = useRef(null);
+    const { currentTheme } = useTheme();
 
     const y = useTransform(scrollY, [0, 500], [0, -150]);
     const opacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -37,8 +40,10 @@ const HeroSection = () => {
     useEffect(() => {
         setIsClient(true);
     }, []);
+
     const yScroll = useTransform(scrollY, [0, 500], [0, 100]);
     const scaleScroll = useTransform(scrollY, [0, 500], [1, 1.1]);
+
     return (
         <motion.div
             ref={ref}
@@ -47,9 +52,10 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
         >
+            <ThemeSelector className="top-20 right-4" />
             {/* Parallax background with gradient overlay */}
             <motion.div
-                className="absolute inset-0 z-0 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900"
+                className={`absolute inset-0 z-0 bg-gradient-to-br ${currentTheme.primary}`}
                 style={isClient ? {
                     y: yScroll,
                     scale: scaleScroll
@@ -61,7 +67,7 @@ const HeroSection = () => {
                 {isClient && (
                     <>
                         <motion.div
-                            className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-blue-400 opacity-20 blur-xl"
+                            className={`absolute top-1/4 left-1/4 w-32 h-32 rounded-full ${currentTheme.iconColor.replace('text-', 'bg-')} opacity-20 blur-xl`}
                             animate={{
                                 x: [0, 20, 0],
                                 y: [0, -20, 0],
@@ -127,7 +133,7 @@ const HeroSection = () => {
                 >
                     <Avatar className="h-40 w-40 border-4 border-white/30 shadow-xl mx-auto">
                         <AvatarImage src={userData.profileImage} alt={userData.name} />
-                        <AvatarFallback className="text-5xl bg-gradient-to-br from-blue-500 to-purple-600">NPA</AvatarFallback>
+                        <AvatarFallback className={`text-5xl bg-gradient-to-br ${currentTheme.accent}`}>NPA</AvatarFallback>
                     </Avatar>
 
                     {/* Impact score badge */}
@@ -140,7 +146,7 @@ const HeroSection = () => {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+                                    <div className={`bg-gradient-to-r ${currentTheme.buttonGradient} text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg`}>
                                         <span className="font-bold">{userData.impactScore}</span>
                                     </div>
                                 </TooltipTrigger>
@@ -154,7 +160,7 @@ const HeroSection = () => {
                 </motion.div>
 
                 <motion.h1
-                    className="text-5xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200"
+                    className={`text-5xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGradient}`}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.5 }}
@@ -216,15 +222,15 @@ const HeroSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 1 }}
                 >
-                    <Button className="bg-white text-blue-900 hover:bg-blue-100 gap-2">
+                    <Button className={`bg-gradient-to-r ${currentTheme.buttonGradient} text-white border-none hover:opacity-90 gap-2`}>
                         <UserPlus size={16} />
                         Connect
                     </Button>
-                    <Button variant="outline" className="border-white/30 hover:bg-white/10 text-pink-500 gap-2">
+                    <Button variant="outline" className={`border-white/30 hover:bg-white/10 bg-${currentTheme.buttonGradient} text-white gap-2`}>
                         <Mail size={16} />
                         Contact
                     </Button>
-                    <Button variant="outline" className="border-white/3 text-purple-600 hover:bg-white/10 gap-2">
+                    <Button variant="outline" className={`border-white/30 bg-${currentTheme.buttonGradient} hover:bg-white/10 text-white gap-2`}>
                         <Share2 size={16} />
                         Share
                     </Button>

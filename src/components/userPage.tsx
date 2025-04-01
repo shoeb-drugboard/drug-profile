@@ -1,4 +1,4 @@
-import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
+import { motion, useScroll, useTransform } from 'motion/react';
 import HeroSection from './profile/HeroSection';
 import FloatingMolecules from './FloatingMolecules';
 import StatsOverview from './profile/StatsOverview';
@@ -10,92 +10,117 @@ import EducationSection from './profile/EducationSection';
 import ExperienceSection from './profile/ExperienceSection';
 import RecentActivitySection from './profile/RecentActivitySection';
 import RelatedResearchersSection from './profile/RelatedResearchersSection';
+import useTheme from '@/contexts/useTheme';
+import React from 'react';
 
 const UserPage = () => {
+    const { currentTheme } = useTheme();
+
+    // Create scroll animations for each section
     return (
-        <ParallaxProvider scrollAxis='vertical'>
-            <div className="min-h-screen space-y-10 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-                <FloatingMolecules
-                    count={12}
-                    color="rgba(79, 172, 254, 0.8)"
-                    secondaryColor="rgba(0, 242, 254, 0.8)"
-                    speed={0.8}
-                    minSize={80}
-                    maxSize={200}
-                />
-                <MolecularNavigation />
+        <div className={`min-h-screen space-y-0 bg-black text-white`}>
+            <FloatingMolecules
+                count={12}
+                color={`var(--${currentTheme.iconColor.replace('text-', '')})`}
+                secondaryColor="rgba(0, 242, 254, 0.8)"
+                speed={0.8}
+                minSize={80}
+                maxSize={200}
+            />
+            <MolecularNavigation />
 
-                {/* Profile Section */}
-                <section id="hero" className="min-h-screen flex items-center justify-center relative">
-                    <Parallax translateY={[-20, 20]} className="w-full" >
-                        <HeroSection />
-                    </Parallax>
-                </section>
+            {/* Theme Selector Button */}
 
-                {/* Stats Section */}
-                <section id="stats" className="min-h-screen flex items-center justify-center relative bg-slate-800/50">
-                    <Parallax translateY={[-20, 20]} className="w-full h-full">
-                        <StatsOverview />
-                    </Parallax>
-                </section>
+            {/* Profile Section */}
+            <section id="hero" className={`min-h-screen flex items-center justify-center relative bg-opacity-30`}>
+                <ParallaxSection>
+                    <HeroSection />
+                </ParallaxSection>
+            </section>
 
-                {/* Experience Section */}
-                <section id="experience" className="flex items-center justify-center relative">
-                    <Parallax translateY={[-10, 10]} className="w-full h-max">
-                        <ExperienceSection />
-                    </Parallax>
-                </section>
+            {/* Stats Section */}
+            <section id="stats" className={`min-h-screen flex items-center justify-center relative bg-opacity-50`}>
+                <ParallaxSection>
+                    <StatsOverview />
+                </ParallaxSection>
+            </section>
 
-                {/* Education Section */}
-                <section id="education" className="min-h-screen flex items-center justify-center relative bg-slate-800/50">
-                    <Parallax translateY={[-15, 15]} className="w-full">
-                        <EducationSection />
-                    </Parallax>
-                </section>
+            {/* Experience Section */}
+            <section id="experience" className={`min-h-screen flex items-center justify-center relative bg-opacity-30`}>
+                <ParallaxSection speed={0.3}>
+                    <ExperienceSection />
+                </ParallaxSection>
+            </section>
 
-                {/* Skills Section */}
-                <section id="skills" className="min-h-screen flex items-center justify-center relative">
-                    <Parallax translateY={[-20, 20]} className="w-full">
-                        <SkillsSection />
-                    </Parallax>
-                </section>
+            {/* Education Section */}
+            <section id="education" className={`min-h-screen flex items-center justify-center relative bg-opacity-50`}>
+                <ParallaxSection speed={0.3}>
+                    <EducationSection />
+                </ParallaxSection>
+            </section>
 
-                {/* Research Section */}
-                <section id="research" className="min-h-screen flex items-center justify-center relative bg-slate-800/50">
-                    <Parallax translateY={[-15, 15]} className="w-full">
-                        <ResearchSection />
-                    </Parallax>
-                </section>
+            {/* Skills Section */}
+            <section id="skills" className={`min-h-screen flex items-center justify-center relative bg-opacity-30`}>
+                <ParallaxSection>
+                    <SkillsSection />
+                </ParallaxSection>
+            </section>
 
-                {/* Awards Section */}
-                <section id="awards" className="min-h-screen flex items-center justify-center relative">
-                    <Parallax translateY={[-20, 20]} className="w-full">
-                        <AwardsSection />
-                    </Parallax>
-                </section>
+            {/* Research Section */}
+            <section id="research" className={`min-h-screen flex items-center justify-center relative bg-opacity-50`}>
+                <ParallaxSection speed={0.3}>
+                    <ResearchSection />
+                </ParallaxSection>
+            </section>
 
-                {/* Activity Section */}
-                <section id="activity" className="min-h-screen flex items-center justify-center relative bg-slate-800/50">
-                    <Parallax translateY={[-15, 15]} className="w-full">
-                        <RecentActivitySection />
-                    </Parallax>
-                </section>
+            {/* Awards Section */}
+            <section id="awards" className={`min-h-screen flex items-center justify-center relative bg-opacity-30`}>
+                <ParallaxSection>
+                    <AwardsSection />
+                </ParallaxSection>
+            </section>
 
-                {/* Connect Section */}
-                <section id="connect" className="min-h-screen flex items-center justify-center relative">
-                    <Parallax translateY={[-20, 20]} className="w-full">
-                        <RelatedResearchersSection />
-                    </Parallax>
-                </section>
+            {/* Activity Section */}
+            <section id="activity" className={`min-h-screen flex items-center justify-center relative bg-opacity-50`}>
+                <ParallaxSection speed={0.3}>
+                    <RecentActivitySection />
+                </ParallaxSection>
+            </section>
 
-                {/* Footer */}
-                <footer className="bg-slate-900 py-8 text-center text-slate-400">
-                    <div className="container mx-auto px-4">
-                        <p>© {new Date().getFullYear()} User Profile. All rights reserved.</p>
-                    </div>
-                </footer>
-            </div>
-        </ParallaxProvider>
+            {/* Connect Section */}
+            <section id="connect" className={`min-h-screen flex items-center justify-center relative bg-opacity-30`}>
+                <ParallaxSection>
+                    <RelatedResearchersSection />
+                </ParallaxSection>
+            </section>
+
+            {/* Footer */}
+            <footer className={`py-8 text-center text-slate-400`}>
+                <div className="container mx-auto px-4">
+                    <p>© {new Date().getFullYear()} User Profile. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    );
+};
+
+// Reusable Parallax Section component using motion/react
+const ParallaxSection = ({ children, speed = 1 }: { children?: React.ReactElement; speed?: number }) => {
+    const { scrollYProgress } = useScroll();
+    // Reduced parallax effect to prevent content from moving too far
+    const y = useTransform(scrollYProgress, [0, 1], [0, speed * 50]);
+
+    return (
+        <motion.div
+            className="w-full"
+            style={{ y }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false, margin: "0px 0px -200px 0px" }}
+            transition={{ duration: 0.5 }}
+        >
+            {children}
+        </motion.div>
     );
 };
 

@@ -1,22 +1,29 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, useScroll, useInView } from 'motion/react';
-import { Briefcase } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useInView } from 'motion/react';
+import { Briefcase, ChevronDown } from 'lucide-react';
 import { userData, fadeInUpVariants, fadeInVariants } from '@/assets/data';
+import useTheme from '@/contexts/useTheme';
 
 const ExperienceSection = () => {
     const [isClient, setIsClient] = useState(false);
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
     const { scrollY } = useScroll();
     const ref = useRef(null);
     const inView = useInView(ref, { once: false, amount: 0.1 });
+    const { currentTheme } = useTheme();
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
+    const toggleExpand = (index: number) => {
+        setExpandedIndex(expandedIndex === index ? null : index);
+    };
+
     return (
         <motion.section
             ref={ref}
-            className="py-24 bg-slate-900 relative overflow-hidden pt-24"
+            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} relative overflow-hidden pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -45,55 +52,124 @@ const ExperienceSection = () => {
                 </motion.h2>
 
                 <div className="relative">
-                    {/* Timeline line */}
+                    {/* Tree trunk */}
                     <motion.div
-                        className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-purple-600 transform -translate-x-1/2"
+                        className={`absolute left-1/2 top-0 bottom-0 w-8 rounded-full bg-gradient-to-b ${currentTheme.buttonGradient} transform -translate-x-1/2`}
                         initial={{ height: 0 }}
                         animate={inView ? { height: "100%" } : { height: 0 }}
                         transition={{ duration: 1.5, ease: "easeInOut" }}
                     />
 
-                    <div className="grid grid-cols-1 gap-24 relative">
+                    <div className="grid grid-cols-1 gap-20 relative">
                         {userData.experience.map((exp, index) => (
                             <motion.div
                                 key={index}
-                                className={`relative ${index % 2 === 0 ? 'md:mr-auto md:ml-0' : 'md:ml-auto md:mr-0'} md:w-5/12 w-full`}
-                                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                                animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                                transition={{ duration: 0.6, delay: index * 0.2 }}
+                                className={`relative ${index % 2 === 0 ? 'md:mr-auto md:ml-0 md:pr-12' : 'md:ml-auto md:mr-0 md:pl-12'} md:w-5/12 w-full`}
+                                initial={{ opacity: 0 }}
+                                animate={inView ? { opacity: 1 } : { opacity: 0 }}
+                                transition={{ duration: 0.6, delay: index * 0.3 }}
                             >
-                                {/* Timeline node */}
+                                {/* Branch */}
                                 <motion.div
-                                    className="absolute top-0 w-5 h-5 rounded-full bg-white z-10 left-1/2 -translate-x-1/2 md:left-auto md:right-0 md:translate-x-[calc(50vw-50%)]"
-                                    initial={{ scale: 0 }}
-                                    animate={inView ? { scale: 1 } : { scale: 0 }}
-                                    transition={{ duration: 0.4, delay: 0.6 + index * 0.2 }}
+                                    className={`absolute top-8 h-1 bg-gradient-to-r ${currentTheme.buttonGradient} ${index % 2 === 0 ? 'right-0 md:w-[calc(50vw/2)]' : 'left-0 md:w-[calc(50vw/2)]'}`}
+                                    initial={{ width: 0 }}
+                                    animate={inView ? { width: "calc(50vw/2)" } : { width: 0 }}
+                                    transition={{ duration: 0.8, delay: 0.2 + index * 0.3 }}
                                 />
 
-                                {/* 3D Card */}
+                                {/* Leaf node */}
                                 <motion.div
-                                    className="p-6 rounded-xl bg-slate-800/80 backdrop-blur-lg border border-slate-700 text-white shadow-xl"
+                                    className={`absolute top-6 w-6 h-6 rounded-full ${currentTheme.iconColor.replace('text-', 'bg-')} border-2 border-white z-10 ${index % 2 === 0 ? 'right-0 -mr-3' : 'left-0 -ml-3'}`}
+                                    initial={{ scale: 0 }}
+                                    animate={inView ? { scale: 1 } : { scale: 0 }}
+                                    transition={{ duration: 0.4, delay: 0.6 + index * 0.3 }}
+                                />
+
+                                {/* Accordion 3D Card */}
+                                <motion.div
+                                    className={`p-6 rounded-xl bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg border border-${currentTheme.iconColor.replace('text-', '')}/50 text-white shadow-xl overflow-hidden transition-all duration-300 ${expandedIndex === index ? `border-${currentTheme.iconColor.replace('text-', '')}/70` : ''}`}
+                                    onClick={() => toggleExpand(index)}
                                     whileHover={{
                                         y: -5,
-                                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+                                        boxShadow: "0 25px 50px -12px rgba(6, 78, 59, 0.3)"
                                     }}
                                     transition={{ duration: 0.2 }}
+                                    layout
                                 >
+                                    {/* Card top decoration - leaf shapes */}
+                                    <div className={`absolute -top-1 left-0 right-0 h-1 bg-gradient-to-r from-${currentTheme.iconColor.replace('text-', '')}/0 via-${currentTheme.iconColor.replace('text-', '')} to-${currentTheme.iconColor.replace('text-', '')}/0`}></div>
+                                    <div className={`absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-${currentTheme.iconColor.replace('text-', '')}/0 via-${currentTheme.iconColor.replace('text-', '')} to-${currentTheme.iconColor.replace('text-', '')}/0 transform -translate-y-1/2`}></div>
+
                                     {/* Duration pill */}
-                                    <div className="absolute -top-3 right-6 transform">
-                                        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold rounded-full px-3 py-1 shadow-md">
+                                    <div className="absolute top-0 right-3 transform">
+                                        <div className={`bg-gradient-to-r ${currentTheme.buttonGradient} text-white text-xs font-bold rounded-full px-3 py-1 shadow-md`}>
                                             {exp.duration}
                                         </div>
                                     </div>
 
                                     <div className="pt-2">
-                                        <h4 className="font-bold text-xl text-blue-300 mb-2">{exp.role}</h4>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h4 className="font-bold text-xl text-white">{exp.role}</h4>
+                                            <motion.div
+                                                animate={{ rotate: expandedIndex === index ? 180 : 0 }}
+                                                className={`${currentTheme.iconColor.replace('text-', 'bg-')}/20 rounded-full p-1 cursor-pointer`}
+                                            >
+                                                <ChevronDown size={16} className={currentTheme.iconColor} />
+                                            </motion.div>
+                                        </div>
+
                                         <div className="flex items-center text-slate-300 mb-4 gap-1">
-                                            <Briefcase size={16} />
+                                            <Briefcase size={16} className={currentTheme.iconColor} />
                                             <span>{exp.company}, {exp.location}</span>
                                         </div>
 
-                                        <p className="text-slate-300">{exp.description}</p>
+                                        {/* Accordion content */}
+                                        <AnimatePresence>
+                                            {expandedIndex === index && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    {/* Content that appears when expanded */}
+                                                    <div className={`mt-4 border-t border-${currentTheme.iconColor.replace('text-', '')}/30 pt-4`}>
+                                                        <p className="text-slate-300">{exp.description}</p>
+
+                                                        {/* Additional details section */}
+                                                        <div className="mt-4 grid grid-cols-1 gap-3">
+                                                            <div className={`bg-${currentTheme.iconColor.replace('text-', '')}/20 p-3 rounded-lg border border-${currentTheme.iconColor.replace('text-', '')}/20`}>
+                                                                <h5 className="text-white text-sm font-semibold mb-2">Key Responsibilities</h5>
+                                                                <ul className="list-disc list-inside text-slate-300 text-sm space-y-1">
+                                                                    {[1, 2, 3].map(item => (
+                                                                        <li key={item} className="text-sm">
+                                                                            {`Sample responsibility ${item} for ${exp.role}`}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+
+                                                            <div className={`bg-${currentTheme.iconColor.replace('text-', '')}/20 p-3 rounded-lg border border-${currentTheme.iconColor.replace('text-', '')}/20`}>
+                                                                <h5 className="text-white text-sm font-semibold mb-2">Technologies Used</h5>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {['React', 'TypeScript', 'Node.js'].map(tech => (
+                                                                        <span key={tech} className={`px-2 py-1 bg-${currentTheme.iconColor.replace('text-', '')}/30 text-white text-xs rounded-full`}>
+                                                                            {tech}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+
+                                        {/* Gradient leaf-like decoration at bottom when collapsed */}
+                                        {expandedIndex !== index && (
+                                            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
+                                        )}
                                     </div>
                                 </motion.div>
                             </motion.div>

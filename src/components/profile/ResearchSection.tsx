@@ -4,11 +4,13 @@ import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { userData, fadeInUpVariants, fadeInVariants } from "@/assets/data";
 import { Copy, ExternalLink, MessageSquare, FileText, MapPin, Calendar } from "lucide-react";
+import useTheme from "@/contexts/useTheme";
 
 const ResearchSection = () => {
     const ref = useRef(null);
     const inView = useInView(ref, { once: false, amount: 0.2 });
     const [activeTab, setActiveTab] = useState("publications");
+    const { currentTheme } = useTheme();
 
     const tabVariants = {
         inactive: { opacity: 0.6, y: 0 },
@@ -22,7 +24,7 @@ const ResearchSection = () => {
     return (
         <motion.section
             ref={ref}
-            className="py-24 bg-gradient-to-b from-slate-800 to-slate-900 pt-24"
+            className={`py-24 bg-gradient-to-b ${currentTheme.altSectionGradient} pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -41,7 +43,7 @@ const ResearchSection = () => {
                 >
                     <div className="bg-slate-800/50 backdrop-blur-md rounded-full p-1 border border-slate-700/50 inline-flex">
                         <motion.button
-                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "publications" ? "bg-indigo-600 text-white" : "text-slate-300"}`}
+                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "publications" ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white` : "text-slate-300"}`}
                             variants={tabVariants}
                             animate={activeTab === "publications" ? "active" : "inactive"}
                             onClick={() => setActiveTab("publications")}
@@ -49,7 +51,7 @@ const ResearchSection = () => {
                             Publications
                         </motion.button>
                         <motion.button
-                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "patents" ? "bg-indigo-600 text-white" : "text-slate-300"}`}
+                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "patents" ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white` : "text-slate-300"}`}
                             variants={tabVariants}
                             animate={activeTab === "patents" ? "active" : "inactive"}
                             onClick={() => setActiveTab("patents")}
@@ -57,7 +59,7 @@ const ResearchSection = () => {
                             Patents
                         </motion.button>
                         <motion.button
-                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "presentations" ? "bg-indigo-600 text-white" : "text-slate-300"}`}
+                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "presentations" ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white` : "text-slate-300"}`}
                             variants={tabVariants}
                             animate={activeTab === "presentations" ? "active" : "inactive"}
                             onClick={() => setActiveTab("presentations")}
@@ -89,7 +91,7 @@ const ResearchSection = () => {
                                     }}
                                     className="bg-slate-800/70 backdrop-blur-md rounded-lg border border-slate-700 overflow-hidden shadow-lg"
                                 >
-                                    <div className="h-2 bg-gradient-to-r from-blue-500 to-indigo-600" />
+                                    <div className={`h-2 bg-gradient-to-r ${currentTheme.buttonGradient}`} />
                                     <div className="p-6">
                                         <h4 className="font-semibold text-lg text-white mb-2">{pub.title}</h4>
                                         <p className="text-sm text-slate-300 mb-4">
@@ -97,7 +99,7 @@ const ResearchSection = () => {
                                         </p>
 
                                         <div className="flex flex-wrap gap-2 mb-4">
-                                            <Badge variant="secondary" className="bg-blue-900/50 text-blue-300 border-blue-800">
+                                            <Badge variant="secondary" className={`bg-opacity-50 ${currentTheme.iconColor} border border-opacity-50`}>
                                                 {pub.citations} citations
                                             </Badge>
                                             {pub.highlight && (
@@ -108,11 +110,11 @@ const ResearchSection = () => {
                                         </div>
 
                                         <div className="flex gap-2 mt-4">
-                                            <Button size="sm" variant="outline" className="gap-1 border-slate-600 text-slate-300 hover:bg-slate-700">
+                                            <Button size="sm" variant="outline" className={`gap-1 bg-${currentTheme.buttonGradient} border-slate-600 text-slate-300 hover:bg-slate-700`}>
                                                 <Copy size={14} />
                                                 <span>Cite</span>
                                             </Button>
-                                            <Button size="sm" variant="outline" className="gap-1 border-slate-600 text-slate-300 hover:bg-slate-700">
+                                            <Button size="sm" variant="outline" className={`gap-1 bg-${currentTheme.buttonGradient} border-slate-600 text-slate-300 hover:bg-slate-700`}>
                                                 <ExternalLink size={14} />
                                                 <span>Read</span>
                                             </Button>
@@ -144,7 +146,7 @@ const ResearchSection = () => {
                                     }}
                                     className="bg-slate-800/70 backdrop-blur-md rounded-lg border border-slate-700 overflow-hidden shadow-lg"
                                 >
-                                    <div className="h-2 bg-gradient-to-r from-purple-500 to-fuchsia-600" />
+                                    <div className={`h-2 bg-gradient-to-r ${currentTheme.accent}`} />
                                     <div className="p-6">
                                         <h4 className="font-semibold text-lg text-white mb-3">{patent.title}</h4>
                                         <p className="text-sm text-slate-300 mb-4">
@@ -152,11 +154,11 @@ const ResearchSection = () => {
                                         </p>
 
                                         <div className="flex gap-2 mt-4">
-                                            <Button size="sm" variant="outline" className="gap-1 border-slate-600 text-slate-300 hover:bg-slate-700">
+                                            <Button size="sm" variant="outline" className={`gap-1 bg-${currentTheme.buttonGradient} border-slate-600 text-slate-300 hover:bg-slate-700`}>
                                                 <Copy size={14} />
                                                 <span>Cite</span>
                                             </Button>
-                                            <Button size="sm" variant="outline" className="gap-1 border-slate-600 text-slate-300 hover:bg-slate-700">
+                                            <Button size="sm" variant="outline" className={`gap-1 bg-${currentTheme.buttonGradient} border-slate-600 text-slate-300 hover:bg-slate-700`}>
                                                 <ExternalLink size={14} />
                                                 <span>View</span>
                                             </Button>
@@ -189,11 +191,11 @@ const ResearchSection = () => {
                                     className="bg-slate-800/70 backdrop-blur-md rounded-lg border border-slate-700 overflow-hidden shadow-lg p-6"
                                 >
                                     <div className="flex gap-4">
-                                        <div className={`p-3 rounded-lg ${pres.type === "Oral" ? "bg-amber-900/30" : "bg-blue-900/30"} text-white self-start`}>
+                                        <div className={`p-3 rounded-lg ${pres.type === "Oral" ? "bg-opacity-30" : "bg-opacity-30"} bg-gradient-to-r ${currentTheme.buttonGradient} text-white self-start`}>
                                             {pres.type === "Oral" ? (
-                                                <MessageSquare size={24} className="text-amber-400" />
+                                                <MessageSquare size={24} className="text-white" />
                                             ) : (
-                                                <FileText size={24} className="text-blue-400" />
+                                                <FileText size={24} className="text-white" />
                                             )}
                                         </div>
 

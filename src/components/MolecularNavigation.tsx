@@ -1,5 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
-import { motion, useAnimationControls } from 'motion/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, useAnimationControls, useScroll, useMotionValueEvent } from 'motion/react';
+import { userData } from '@/assets/data';
+import useTheme from '@/contexts/useTheme';
 import {
     Home,
     Briefcase,
@@ -16,9 +18,10 @@ import {
 const MolecularNavigation = () => {
     const [activeSection, setActiveSection] = useState("hero");
     const [isVisible, setIsVisible] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
     const [isExpanded, setIsExpanded] = useState(false);
     const controls = useAnimationControls();
+    const { currentTheme } = useTheme();
+    const { scrollY } = useScroll();
 
     // Navigation items
     const navItems = useMemo(() => [
@@ -37,67 +40,91 @@ const MolecularNavigation = () => {
     const scrollToSection = (sectionId: string) => {
         const section = document.getElementById(sectionId);
         if (section) {
-            // Add some offset to account for the navigation bar
-            const yOffset = -80;
-            const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            // Calculate a dynamic offset based on viewport height
+            const viewportHeight = window.innerHeight;
+            const yOffset = Math.min(viewportHeight * 0.2, 50); // Adaptive offset between 10% of viewport height and max 100px
 
-            window.scrollTo({
-                top: y,
-                behavior: 'smooth'
+            // Use motion to animate the scroll
+            const y = window.pageYOffset + section.getBoundingClientRect().top + yOffset;
+
+            // Using Framer Motion's animate function for smoother scrolling
+            import('motion').then(({ animate }) => {
+                animate(window.scrollY, y, {
+                    type: 'spring',
+                    stiffness: 120,
+                    damping: 20,
+                    onUpdate: (latest) => window.scrollTo(0, latest)
+                });
             });
+
+            // Set active section immediately to avoid flicker during scroll
+            setActiveSection(sectionId);
+
+            // Hide expanded navigation
+            if (isExpanded) {
+                setIsExpanded(false);
+                document.body.style.overflow = '';
+            }
         }
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
+    // Using Framer Motion's scroll detection
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        // Determine if we should show or hide based on scroll direction
+        const currentScrollY = latest;
+        const prevScrollY = scrollY.getPrevious() || 0; // Get previous scroll position
 
-            // Determine if we should show or hide based on scroll direction
-            if (currentScrollY < 100) {
-                // Always show at the top of the page
-                setIsVisible(true);
-            } else if (currentScrollY > lastScrollY) {
-                // Scrolling down - hide the navigation
-                setIsVisible(false);
-            } else {
-                setIsVisible(true);
+        if (currentScrollY < 100) {
+            // Always show at the top of the page
+            setIsVisible(true);
+        } else if (currentScrollY > prevScrollY + 10) { // Added threshold to prevent flickering
+            // Scrolling down - hide the navigation
+            setIsVisible(false);
+        } else if (currentScrollY < prevScrollY - 10) { // Added threshold to prevent flickering
+            setIsVisible(true);
+        }
+
+        // Determine active section based on scroll position
+        const sections = navItems.map(item => ({
+            id: item.id,
+            element: document.getElementById(item.id)
+        })).filter(item => item.element);
+
+        // Improved algorithm to find the most visible section
+        const viewportHeight = window.innerHeight;
+        let mostVisibleSection = null;
+        let maxVisibleRatio = 0;
+
+        for (const section of sections) {
+            const rect = section.element?.getBoundingClientRect();
+            if (!rect) continue;
+
+            // Calculate how much of the section is in the viewport
+            const visibleTop = Math.max(0, rect.top);
+            const visibleBottom = Math.min(viewportHeight, rect.bottom);
+            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+            // Calculate the ratio of the section that's visible (between 0 and 1)
+            const sectionHeight = rect.height || 1; // Avoid division by zero
+            const visibleRatio = visibleHeight / sectionHeight;
+
+            // Factor in position - give preference to sections closer to the middle of the viewport
+            const distanceFromMiddle = Math.abs((rect.top + rect.bottom) / 2 - viewportHeight / 2);
+            const positionFactor = 1 - Math.min(distanceFromMiddle / (viewportHeight / 2), 1);
+
+            // Combined score based on visibility and position
+            const score = visibleRatio * 0.7 + positionFactor * 0.3;
+
+            if (score > maxVisibleRatio) {
+                maxVisibleRatio = score;
+                mostVisibleSection = section.id;
             }
+        }
 
-            setLastScrollY(currentScrollY);
-
-            // Determine active section based on scroll position
-            const sections = navItems.map(item => ({
-                id: item.id,
-                element: document.getElementById(item.id)
-            })).filter(item => item.element);
-
-            // Find the section that is currently most visible in the viewport
-            let mostVisibleSection = null;
-            let maxVisibleHeight = 0;
-
-            for (const section of sections) {
-                const rect = section.element?.getBoundingClientRect();
-                if (!rect) continue;
-
-                // Calculate how much of the section is in the viewport
-                const visibleTop = Math.max(0, rect.top);
-                const visibleBottom = Math.min(window.innerHeight, rect.bottom);
-                const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-
-                if (visibleHeight > maxVisibleHeight) {
-                    maxVisibleHeight = visibleHeight;
-                    mostVisibleSection = section.id;
-                }
-            }
-
-            if (mostVisibleSection && mostVisibleSection !== activeSection) {
-                setActiveSection(mostVisibleSection);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [lastScrollY, activeSection, navItems]);
+        if (mostVisibleSection && mostVisibleSection !== activeSection) {
+            setActiveSection(mostVisibleSection);
+        }
+    });
 
     useEffect(() => {
         controls.start(isVisible ? "visible" : "hidden");
@@ -115,7 +142,7 @@ const MolecularNavigation = () => {
     };
 
     // Molecular positioning utilities for centered layout
-    const getPosition = (index: number, total: number, radius: number = 150) => {
+    const getPosition = (index: number, total: number, radius: number = 200) => {
         if (!isExpanded) {
             return { x: 0, y: 0, scale: 0 };
         }
@@ -134,7 +161,7 @@ const MolecularNavigation = () => {
         <>
             {/* Full-screen backdrop when expanded */}
             <motion.div
-                className="fixed inset-0 bg-black/60 backdrop-blur-md z-40"
+                className="fixed h-full inset-0 bg-black/60 backdrop-blur-md z-40"
                 initial={{ opacity: 0 }}
                 animate={{
                     opacity: isExpanded ? 1 : 0,
@@ -168,7 +195,7 @@ const MolecularNavigation = () => {
                     >
                         {/* Electron Orbitals - For Visual Effect */}
                         <motion.div
-                            className="absolute top-0 left-0 w-80 h-80 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                            className="absolute top-0 left-0 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                             animate={{
                                 opacity: isExpanded ? 1 : 0,
                                 scale: isExpanded ? 1 : 0.8
@@ -178,21 +205,21 @@ const MolecularNavigation = () => {
                             {isExpanded && (
                                 <>
                                     <motion.div
-                                        className="absolute top-1/2 left-1/2 w-80 h-80 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-500/20"
+                                        className={`absolute top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-${currentTheme.iconColor.replace('text-', '')}/20`}
                                         animate={{ rotate: 360 }}
-                                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                                        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
                                     />
                                     <motion.div
-                                        className="absolute top-1/2 left-1/2 w-80 h-80 -translate-x-1/2 -translate-y-1/2 rounded-full border border-purple-500/20"
+                                        className={`absolute top-1/2 left-1/2 w-[400px] h-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-${currentTheme.iconColor.replace('text-', '')}/20`}
                                         style={{ transform: "rotate(45deg)" }}
                                         animate={{ rotate: -360 }}
-                                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                        transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
                                     />
                                     <motion.div
-                                        className="absolute top-1/2 left-1/2 w-64 h-64 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/20"
+                                        className={`absolute top-1/2 left-1/2 w-[300px] h-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-${currentTheme.iconColor.replace('text-', '')}/20`}
                                         style={{ transform: "rotate(25deg)" }}
                                         animate={{ rotate: 360 }}
-                                        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
                                     />
                                 </>
                             )}
@@ -201,13 +228,13 @@ const MolecularNavigation = () => {
                         {/* Labels at center when expanded */}
                         {isExpanded && (
                             <motion.div
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white bg-slate-900/60 backdrop-blur-md p-4 rounded-2xl border border-slate-700/50 pointer-events-none"
+                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white bg-slate-900/70 backdrop-blur-md p-5 rounded-2xl border border-slate-700/50 pointer-events-none shadow-lg"
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.1 }}
                             >
-                                <h3 className="text-lg font-medium">Navigation</h3>
-                                <p className="text-xs text-slate-300">Click on an atom to navigate</p>
+                                <h3 className="text-xl font-medium">{userData.name.split(',')[0].split('.').slice(-1)[0].split(' ')[2]}'s</h3>
+                                <p className="text-sm text-slate-300">Journey</p>
                             </motion.div>
                         )}
 
@@ -225,7 +252,7 @@ const MolecularNavigation = () => {
                                     }}
                                     className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded-full shadow-lg 
                                         ${activeSection === item.id
-                                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white'
+                                            ? `bg-gradient-to-br ${currentTheme.buttonGradient} text-white`
                                             : 'bg-slate-800/90 backdrop-blur-md text-slate-300 hover:text-white'
                                         } flex items-center justify-center transition-colors`}
                                     initial={{ opacity: 0, x: 0, y: 0, scale: 0 }}
@@ -234,10 +261,10 @@ const MolecularNavigation = () => {
                                         x: position.x,
                                         y: position.y,
                                         scale: position.scale,
-                                        width: activeSection === item.id ? 48 : 40,
-                                        height: activeSection === item.id ? 48 : 40,
+                                        width: activeSection === item.id ? 60 : 50,
+                                        height: activeSection === item.id ? 60 : 50,
                                         boxShadow: activeSection === item.id
-                                            ? "0 0 15px 5px rgba(56, 189, 248, 0.3)"
+                                            ? `0 0 15px 5px ${currentTheme.iconColor.replace('text-', 'rgba(')}, 0.3)`
                                             : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                                         pointerEvents: isExpanded ? "auto" : "none"
                                     }}
@@ -249,15 +276,15 @@ const MolecularNavigation = () => {
                                     }}
                                     whileHover={{
                                         scale: position.scale * 1.2,
-                                        boxShadow: "0 0 15px 5px rgba(56, 189, 248, 0.3)"
+                                        boxShadow: `0 0 15px 5px ${currentTheme.iconColor.replace('text-', 'rgba(')}, 0.3)`
                                     }}
                                 >
                                     <div className="relative">
-                                        {item.icon}
+                                        {React.cloneElement(item.icon, { size: 24 })}
 
                                         {/* Item label tooltip */}
                                         <motion.span
-                                            className="absolute whitespace-nowrap top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-900/90 text-xs rounded pointer-events-none"
+                                            className="absolute whitespace-nowrap top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-slate-900/90 text-sm font-medium rounded-md pointer-events-none shadow-lg"
                                             initial={{ opacity: 0, y: -5 }}
                                             animate={{
                                                 opacity: isExpanded ? 1 : 0,
@@ -279,14 +306,14 @@ const MolecularNavigation = () => {
                     {/* Nucleus - Core Navigation Control */}
                     <motion.button
                         onClick={toggleExpansion}
-                        className="relative z-20 w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg border border-blue-500/30"
+                        className={`relative z-20 w-14 h-14 rounded-full bg-gradient-to-br ${currentTheme.buttonGradient} flex items-center justify-center text-white shadow-lg border border-${currentTheme.iconColor.replace('text-', '')}/30`}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         animate={{
                             rotate: isExpanded ? 45 : 0,
                             boxShadow: isExpanded
-                                ? "0 0 25px 5px rgba(56, 189, 248, 0.4)"
-                                : "0 0 15px 2px rgba(56, 189, 248, 0.2)"
+                                ? `0 0 25px 5px ${currentTheme.iconColor.replace('text-', 'rgba(')}, 0.4)`
+                                : `0 0 15px 2px ${currentTheme.iconColor.replace('text-', 'rgba(')}, 0.2)`
                         }}
                         transition={{
                             rotate: { duration: 0.3 },

@@ -10,10 +10,12 @@ import {
     Heart
 } from 'lucide-react';
 import { motion, useInView } from 'motion/react';
+import useTheme from "@/contexts/useTheme";
 
 const StatsOverview = () => {
     const ref = useRef(null);
     const inView = useInView(ref, { once: false, amount: 0.2 });
+    const { currentTheme } = useTheme();
 
     // Add padding to account for the navigation bar
     const topPadding = "pt-16";
@@ -42,20 +44,29 @@ const StatsOverview = () => {
         }
     };
 
+    // Colors for stats cards based on the current theme
+    const colorMap = {
+        publications: currentTheme.secondary,
+        patents: currentTheme.accent,
+        citations: currentTheme.buttonGradient,
+        presentations: currentTheme.highlight,
+        collaborators: currentTheme.secondary,
+        contributions: currentTheme.accent,
+    };
 
     const stats = [
-        { label: "Publications", value: userData.achievements.publications, icon: <BookOpen size={24} />, color: "from-blue-500 to-blue-700" },
-        { label: "Patents", value: userData.achievements.patents, icon: <FileCheck size={24} />, color: "from-purple-500 to-purple-700" },
-        { label: "Citations", value: userData.achievements.citations, icon: <Star size={24} />, color: "from-indigo-500 to-indigo-700" },
-        { label: "Presentations", value: userData.achievements.presentations, icon: <MessageSquare size={24} />, color: "from-emerald-500 to-emerald-700" },
-        { label: "Collaborators", value: userData.achievements.collaborators, icon: <UserPlus size={24} />, color: "from-amber-500 to-amber-700" },
-        { label: "Contributions", value: userData.achievements.contributions, icon: <Heart size={24} />, color: "from-rose-500 to-rose-700" },
+        { label: "Publications", value: userData.achievements.publications, icon: <BookOpen size={24} />, color: colorMap.publications },
+        { label: "Patents", value: userData.achievements.patents, icon: <FileCheck size={24} />, color: colorMap.patents },
+        { label: "Citations", value: userData.achievements.citations, icon: <Star size={24} />, color: colorMap.citations },
+        { label: "Presentations", value: userData.achievements.presentations, icon: <MessageSquare size={24} />, color: colorMap.presentations },
+        { label: "Collaborators", value: userData.achievements.collaborators, icon: <UserPlus size={24} />, color: colorMap.collaborators },
+        { label: "Contributions", value: userData.achievements.contributions, icon: <Heart size={24} />, color: colorMap.contributions },
     ];
 
     return (
         <motion.div
             ref={ref}
-            className={`py-16 bg-gradient-to-b from-slate-800 to-slate-900 ${topPadding}`}
+            className={`grid items-center h-[600px] bg-gradient-to-b ${currentTheme.sectionGradient} ${topPadding}`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -93,4 +104,5 @@ const StatsOverview = () => {
         </motion.div>
     );
 };
+
 export default StatsOverview;

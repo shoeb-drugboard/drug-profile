@@ -64,6 +64,11 @@ export const userData = {
       duration: "01/2015 – 03/2019",
       thesis:
         "Design, synthesis and biological applications of azabicycloalkanone amino acid peptidomimetics",
+      specializations: [
+        "Medicinal Chemistry",
+        "Organic Synthesis",
+        "Peptidomimetics",
+      ],
     },
     {
       degree: "M.Sc. in Organic Chemistry",
@@ -71,12 +76,14 @@ export const userData = {
       location: "Montréal, QC, Canada",
       duration: "01/2013 – 12/2014",
       thesis: "Azabicycloalkanone synthesis by Transannular Cyclization",
+      specializations: ["Organic Synthesis", "Chemical Analysis"],
     },
     {
       degree: "M.Sc. in Organic Chemistry",
       institution: "Nagarjuna University",
       location: "India",
       duration: "05/2004 – 04/2006",
+      specializations: ["Organic Chemistry", "Laboratory Techniques"],
     },
   ],
   certifications: [
@@ -84,16 +91,22 @@ export const userData = {
       name: "Introduction to Molecular Modeling in Drug Discovery",
       issuer: "Schrödinger, Inc.",
       year: "2022",
+      type: "research",
+      accreditation: "Schrödinger Certified",
     },
     {
       name: "High-Throughput Virtual Screening for Hit Finding and Evaluation",
       issuer: "Schrödinger, Inc.",
       year: "2022",
+      type: "research",
+      accreditation: "Advanced Level",
     },
     {
       name: "Business Analysis Fundamentals",
       issuer: "Sauder school of business, UBC",
       year: "2023",
+      type: "business",
+      accreditation: "Professional Certificate",
     },
   ],
   patents: [
