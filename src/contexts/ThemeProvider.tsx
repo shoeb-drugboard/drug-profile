@@ -17,7 +17,9 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             'theme-purple',
             'theme-red',
             'theme-amber',
-            'theme-teal'
+            'theme-teal',
+            'theme-black',
+            'theme-white'
         );
 
         // Add current theme class

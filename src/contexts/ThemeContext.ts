@@ -74,6 +74,30 @@ export const colorThemes = {
     sectionGradient: "from-slate-900 to-slate-800",
     altSectionGradient: "from-slate-800 to-slate-900",
   },
+  black: {
+    name: "Elegant Black",
+    primary: "from-gray-800 via-gray-400 to-black",
+    secondary: "from-gray-200 to-gray-600",
+    accent: "from-gray-400 to-gray-800",
+    highlight: "from-gray-500 to-gray-700",
+    buttonGradient: "from-gray-600 to-black",
+    textGradient: "from-white to-gray-300",
+    iconColor: "text-gray-400",
+    sectionGradient: "from-black to-gray-800",
+    altSectionGradient: "from-gray-800 to-black",
+  },
+  white: {
+    name: "Clinical White",
+    primary: "from-gray-50 via-gray-100 to-white",
+    secondary: "from-gray-100 to-gray-200",
+    accent: "from-gray-200 to-gray-300",
+    highlight: "from-gray-300 to-gray-400",
+    buttonGradient: "from-gray-200 to-white",
+    textGradient: "from-gray-900 to-gray-700",
+    iconColor: "text-gray-700",
+    sectionGradient: "from-white to-gray-100",
+    altSectionGradient: "from-gray-100 to-white",
+  },
 };
 
 export type ThemeKey = keyof typeof colorThemes;

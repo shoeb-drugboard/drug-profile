@@ -116,7 +116,7 @@ const ParallaxSection = ({ children, speed = 1 }: { children?: React.ReactElemen
             style={{ y }}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: false, margin: "0px 0px -200px 0px" }}
+            viewport={{ once: false, margin: "0px 0px -400px 0px" }}
             transition={{ duration: 0.5 }}
         >
             {children}
