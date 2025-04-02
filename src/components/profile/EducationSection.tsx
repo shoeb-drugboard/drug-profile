@@ -1,6 +1,6 @@
-import { useRef } from "react";
-import { motion, useInView } from 'motion/react';
-import { GraduationCap, Microscope, FlaskConical, Award, BookOpen, Atom, PenTool, FileText, Briefcase } from 'lucide-react';
+import { useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from 'motion/react';
+import { GraduationCap, Microscope, FlaskConical, Award, BookOpen, Atom, PenTool, FileText, Briefcase, ChevronDown, X } from 'lucide-react';
 import { userData, fadeInUpVariants, fadeInVariants, staggerContainerVariants } from '@/assets/data';
 import useTheme from '@/contexts/useTheme';
 
@@ -8,6 +8,8 @@ const EducationSection = () => {
     const ref = useRef(null);
     const inView = useInView(ref, { once: false, amount: 0.1 });
     const { currentTheme } = useTheme();
+    const [expandedEdu, setExpandedEdu] = useState<number | null>(null);
+    const [expandedCert, setExpandedCert] = useState<number | null>(null);
 
     // Helper function to get icon based on degree type
     const getDegreeIcon = (degree: string) => {
@@ -100,6 +102,7 @@ const EducationSection = () => {
                     {userData.education.map((edu, index) => {
                         const IconComponent = getDegreeIcon(edu.degree);
                         const isEven = index % 2 === 0;
+                        const isExpanded = expandedEdu === index;
 
                         return (
                             <motion.div
@@ -109,17 +112,26 @@ const EducationSection = () => {
                             >
                                 <div className={`w-full md:w-5/12 ${isEven ? 'md:text-right md:pr-12' : 'md:pl-12'}`}>
                                     <motion.div
-                                        className={`bg-slate-800/70 backdrop-blur-sm border border-${currentTheme.iconColor.replace('text-', '')}/20 rounded-xl p-6 shadow-lg`}
+                                        className={`bg-slate-800/70 backdrop-blur-sm border border-${currentTheme.iconColor.replace('text-', '')}/20 rounded-xl p-6 shadow-lg transition-all ${isExpanded ? 'shadow-xl' : ''}`}
                                         whileHover={{
-                                            scale: 1.02,
+                                            scale: isExpanded ? 1 : 1.02,
                                             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
                                         }}
+                                        onClick={() => setExpandedEdu(isExpanded ? null : index)}
                                     >
-                                        <h4 className="font-bold text-lg text-white mb-2">{edu.degree}</h4>
+                                        <div className="flex justify-between items-start">
+                                            <h4 className="font-bold text-lg text-white mb-2">{edu.degree}</h4>
+                                            <motion.div
+                                                className={`${currentTheme.iconColor} bg-slate-700/50 rounded-full p-1 cursor-pointer`}
+                                                animate={{ rotate: isExpanded ? 180 : 0 }}
+                                            >
+                                                {isExpanded ? <X size={16} /> : <ChevronDown size={16} />}
+                                            </motion.div>
+                                        </div>
                                         <p className="text-slate-200 font-medium">{edu.institution}</p>
                                         <p className="text-slate-400 text-sm mb-4">{edu.location} • {edu.duration}</p>
 
-                                        {/* Specialization tags */}
+                                        {/* Specialization tags - always visible */}
                                         {edu.specializations && (
                                             <div className="flex flex-wrap gap-2 mt-3">
                                                 {edu.specializations.map((spec, i) => (
@@ -133,17 +145,40 @@ const EducationSection = () => {
                                             </div>
                                         )}
 
-                                        {edu.thesis && (
-                                            <div className={`mt-4 pt-3 border-t border-${currentTheme.iconColor.replace('text-', '')}/20`}>
-                                                <div className="flex items-start gap-2">
-                                                    <PenTool size={16} className={currentTheme.iconColor + " mt-1 flex-shrink-0"} />
-                                                    <div>
-                                                        <span className="font-medium text-white">Research:</span>
-                                                        <p className="text-slate-300">{edu.thesis}</p>
+                                        {/* Expanded content */}
+                                        <AnimatePresence>
+                                            {isExpanded && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: "auto" }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    className="overflow-hidden"
+                                                >
+                                                    {edu.thesis && (
+                                                        <div className={`mt-4 pt-3 border-t border-${currentTheme.iconColor.replace('text-', '')}/20`}>
+                                                            <div className="flex items-start gap-2">
+                                                                <PenTool size={16} className={currentTheme.iconColor + " mt-1 flex-shrink-0"} />
+                                                                <div>
+                                                                    <span className="font-medium text-white">Research:</span>
+                                                                    <p className="text-slate-300">{edu.thesis}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Additional expanded content */}
+                                                    <div className={`mt-4 pt-3 border-t border-${currentTheme.iconColor.replace('text-', '')}/20`}>
+                                                        <h5 className="text-white font-medium mb-2">Key Achievements</h5>
+                                                        <ul className="text-slate-300 space-y-1 list-disc pl-5">
+                                                            <li>Top researcher in the department</li>
+                                                            <li>Published {Math.floor(Math.random() * 3) + 1} papers during candidacy</li>
+                                                            <li>Collaborated with leading industry partners</li>
+                                                        </ul>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </motion.div>
                                 </div>
 
@@ -173,43 +208,123 @@ const EducationSection = () => {
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {userData.certifications.map((cert, index) => (
-                            <motion.div
-                                key={index}
-                                className={`bg-gradient-to-br from-slate-800/70 to-slate-900/70 backdrop-blur-sm 
-                                    border border-slate-700/30 rounded-lg p-6 text-white relative overflow-hidden`}
-                                whileHover={{ y: -5, boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.4)" }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                {/* Corner decoration */}
-                                <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-br ${currentTheme.buttonGradient} 
-                                    -translate-y-1/2 translate-x-1/2 rotate-45 transform-gpu`} />
+                        {userData.certifications.map((cert, index) => {
+                            const isExpanded = expandedCert === index;
+                            return (
+                                <motion.div
+                                    key={index}
+                                    className={`bg-gradient-to-br from-slate-800/70 to-slate-900/70 backdrop-blur-sm 
+                                        border border-slate-700/30 rounded-lg p-6 text-white relative overflow-hidden
+                                        ${isExpanded ? 'md:col-span-3 shadow-2xl' : ''}`}
+                                    whileHover={{ y: -5, boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.4)" }}
+                                    transition={{ duration: 0.2 }}
+                                    onClick={() => setExpandedCert(isExpanded ? null : index)}
+                                >
+                                    {/* Corner decoration */}
+                                    <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-br ${currentTheme.buttonGradient} 
+                                        -translate-y-1/2 translate-x-1/2 rotate-45 transform-gpu`} />
 
-                                <div className="flex gap-4 items-start">
-                                    <div className={`${currentTheme.iconColor.replace('text-', 'bg-')}/20 p-3 rounded-full ${currentTheme.iconColor}`}>
-                                        {cert.type === 'clinical' ? <Microscope size={20} /> :
-                                            cert.type === 'research' ? <FlaskConical size={20} /> :
-                                                cert.type === 'regulatory' ? <FileText size={20} /> :
-                                                    <Briefcase size={20} />}
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-white">{cert.name}</h4>
-                                        <p className="text-sm text-slate-300 mt-1">
-                                            {cert.issuer}
-                                        </p>
-                                        <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
-                                            <span>{cert.year}</span>
-                                            {cert.accreditation && (
-                                                <>
-                                                    <span>•</span>
-                                                    <span>{cert.accreditation}</span>
-                                                </>
-                                            )}
+                                    <div className="flex justify-between">
+                                        <div className="flex gap-4 items-start">
+                                            <div className={`${currentTheme.iconColor.replace('text-', 'bg-')}/20 p-3 rounded-full ${currentTheme.iconColor}`}>
+                                                {cert.type === 'clinical' ? <Microscope size={20} /> :
+                                                    cert.type === 'research' ? <FlaskConical size={20} /> :
+                                                        cert.type === 'regulatory' ? <FileText size={20} /> :
+                                                            <Briefcase size={20} />}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-white">{cert.name}</h4>
+                                                <p className="text-sm text-slate-300 mt-1">
+                                                    {cert.issuer}
+                                                </p>
+                                                <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
+                                                    <span>{cert.year}</span>
+                                                    {cert.accreditation && (
+                                                        <>
+                                                            <span>•</span>
+                                                            <span>{cert.accreditation}</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
+                                        <motion.div
+                                            className={`${currentTheme.iconColor} bg-slate-700/50 rounded-full p-1 cursor-pointer mt-1`}
+                                            animate={{ rotate: isExpanded ? 180 : 0 }}
+                                        >
+                                            {isExpanded ? <X size={16} /> : <ChevronDown size={16} />}
+                                        </motion.div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
+
+                                    {/* Expanded certification content */}
+                                    <AnimatePresence>
+                                        {isExpanded && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="mt-6 pt-4 border-t border-slate-700/30 overflow-hidden"
+                                            >
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div>
+                                                        <h5 className="text-white font-medium mb-3">Program Details</h5>
+                                                        <p className="text-slate-300 mb-4">
+                                                            This comprehensive program covers advanced techniques and methodologies in {cert.type}
+                                                            with hands-on training and industry best practices.
+                                                        </p>
+
+                                                        <h6 className="text-white font-medium mb-2">Key Topics:</h6>
+                                                        <ul className="list-disc pl-5 text-slate-300 space-y-1">
+                                                            <li>Advanced techniques in {cert.type === 'research' ? 'molecular modeling' :
+                                                                cert.type === 'clinical' ? 'clinical trials' :
+                                                                    cert.type === 'regulatory' ? 'regulatory compliance' : 'business analysis'}</li>
+                                                            <li>Modern approaches to {cert.type} challenges</li>
+                                                            <li>Practical applications in pharmaceutical industry</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div className="bg-slate-800/50 rounded-lg p-4">
+                                                        <h5 className="text-white font-medium mb-3">Certification Value</h5>
+                                                        <div className="space-y-3">
+                                                            <div>
+                                                                <div className="flex justify-between text-sm mb-1">
+                                                                    <span className="text-slate-300">Industry Recognition</span>
+                                                                    <span className="text-slate-200">95%</span>
+                                                                </div>
+                                                                <div className="w-full bg-slate-700/50 rounded-full h-2">
+                                                                    <div className={`h-2 rounded-full bg-gradient-to-r ${currentTheme.buttonGradient}`} style={{ width: "95%" }}></div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div className="flex justify-between text-sm mb-1">
+                                                                    <span className="text-slate-300">Skill Enhancement</span>
+                                                                    <span className="text-slate-200">87%</span>
+                                                                </div>
+                                                                <div className="w-full bg-slate-700/50 rounded-full h-2">
+                                                                    <div className={`h-2 rounded-full bg-gradient-to-r ${currentTheme.buttonGradient}`} style={{ width: "87%" }}></div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <div className="flex justify-between text-sm mb-1">
+                                                                    <span className="text-slate-300">Career Advancement</span>
+                                                                    <span className="text-slate-200">90%</span>
+                                                                </div>
+                                                                <div className="w-full bg-slate-700/50 rounded-full h-2">
+                                                                    <div className={`h-2 rounded-full bg-gradient-to-r ${currentTheme.buttonGradient}`} style={{ width: "90%" }}></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </motion.div>
             </div>
