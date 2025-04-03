@@ -78,13 +78,13 @@ const HeroSection = () => {
                     scale: scaleScroll
                 } : {}}
             >
-                <div className="absolute inset-0 bg-black opacity-50"></div>
+                <div className={`absolute inset-0 ${currentTheme.primary} ${currentTheme.textGradient}`}></div>
 
                 {/* Only render floating elements on client */}
                 {isClient && (
                     <>
                         <motion.div
-                            className={`absolute top-1/4 left-1/4 w-32 h-32 rounded-full ${currentTheme.iconColor.replace('text-', 'bg-')} opacity-20 blur-xl`}
+                            className={`absolute top-1/4 left-1/4 w-32 h-32 rounded-full ${currentTheme.iconColor.replace('text-', 'bg-')} ${currentTheme.textGradient} opacity-20 blur-xl`}
                             animate={{
                                 x: [0, 20, 0],
                                 y: [0, -20, 0],
@@ -130,7 +130,7 @@ const HeroSection = () => {
 
             {/* Content container */}
             <motion.div
-                className="container relative z-10 text-white px-6 py-12"
+                className={`container relative z-10 ${currentTheme.textGradient} px-6 py-12`}
                 style={isClient ? {
                     y: springY,
                     opacity: springOpacity,
@@ -169,8 +169,8 @@ const HeroSection = () => {
                                         key={option.type}
                                         onClick={() => handleFrameChange(option.type as 'benzene' | 'dna' | 'peptide' | 'circle')}
                                         className={`text-xs px-2 py-1 rounded-full transition-colors ${frameType === option.type
-                                            ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white`
-                                            : 'bg-white/10 text-blue-100 hover:bg-white/20'
+                                            ? `${currentTheme.buttonGradient}0 ${currentTheme.textGradient}`
+                                            : 'bg-gray-200/80 hover:bg-white/20'
                                             }`}
                                     >
                                         {option.label}
@@ -188,19 +188,19 @@ const HeroSection = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger>
-                                            <div className={`bg-gradient-to-r ${currentTheme.buttonGradient} text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg`}>
-                                                <span className="font-bold">{userData.impactScore}</span>
+                                            <div className={`bg-gradient-to-bl ${currentTheme.buttonGradient} rounded-full w-16 h-16 flex items-center justify-center shadow-lg`}>
+                                                <span className={`font-bold ${currentTheme.textGradient}`}>{userData.impactScore}</span>
                                             </div>
                                         </TooltipTrigger>
-                                        <TooltipContent className="bg-white/10 backdrop-blur-lg border-0 w-64">
+                                        <TooltipContent className={`bg-white/80 backdrop-blur-lg border-0 w-64 ${currentTheme.textGradient}`}>
                                             <p className="font-semibold">Impact Score: {userData.impactScore}</p>
-                                            <p className="text-xs text-blue-200">Top 5% in Medicinal Chemistry</p>
-                                            <div className="mt-2">
+                                            <p className={`text-xs `}>Top 5% in Medicinal Chemistry</p>
+                                            <div className={`mt-2 text-sm`}>
                                                 {impactBreakdown.map((item, i) => (
                                                     <div key={i} className="flex items-center text-xs mt-1">
                                                         <div className={`w-2 h-2 rounded-full ${item.color} mr-2`}></div>
                                                         <span className="flex-1">{item.category}</span>
-                                                        <span className="font-medium">{item.score}</span>
+                                                        <span className={`font-medium`} >{item.score}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -212,34 +212,34 @@ const HeroSection = () => {
 
                         {/* Key professional metrics */}
                         <motion.div
-                            className="grid grid-cols-2 gap-2 mt-6 text-center"
+                            className={`grid grid-cols-2 gap-2 mt-6 text-center ${currentTheme.textGradient}`}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 0.9 }}
                         >
-                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                            <div className={`bg-gradient-to-bl ${currentTheme.accent} shadow-lg backdrop-blur-sm rounded-lg p-3`}>
                                 <div className="font-bold text-2xl">{userData.achievements.publications}</div>
-                                <div className="text-xs text-blue-200">Publications</div>
+                                <div className={`text-xs`}>Publications</div>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                            <div className={`bg-gradient-to-bl ${currentTheme.accent} shadow-lg backdrop-blur-sm rounded-lg p-3`}>
                                 <div className="font-bold text-2xl">{userData.achievements.patents}</div>
-                                <div className="text-xs text-blue-200">Patents</div>
+                                <div className={`text-xs`}>Patents</div>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                            <div className={`bg-gradient-to-bl ${currentTheme.accent} shadow-lg backdrop-blur-sm rounded-lg p-3`}>
                                 <div className="font-bold text-2xl">{userData.achievements.citations}</div>
-                                <div className="text-xs text-blue-200">Citations</div>
+                                <div className="text-xs">Citations</div>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                            <div className={`bg-gradient-to-bl ${currentTheme.accent} shadow-lg backdrop-blur-sm rounded-lg p-3`}>
                                 <div className="font-bold text-2xl">{userData.achievements.collaborators}</div>
-                                <div className="text-xs text-blue-200">Collaborators</div>
+                                <div className="text-xs">Collaborators</div>
                             </div>
                         </motion.div>
                     </div>
 
                     {/* Right column - Profile information */}
-                    <div className="md:col-span-2 text-left">
+                    <div className={`md:col-span-2 text-left ${currentTheme.textGradient}`}>
                         <motion.h1
-                            className={`text-4xl md:text-5xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r ${currentTheme.textGradient}`}
+                            className={`text-4xl md:text-5xl font-bold mb-2 bg-clip-text`}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 0.5 }}
@@ -253,18 +253,18 @@ const HeroSection = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 0.6 }}
                         >
-                            <div className="text-xl text-blue-100 flex items-center">
+                            <div className="text-xl  flex items-center">
                                 <Briefcase size={16} className="mr-2" />
                                 <span>{userData.title}</span>
                             </div>
-                            <div className="hidden md:block text-blue-300 mx-2">•</div>
-                            <div className="text-lg text-blue-100">
+                            <div className="hidden md:block mx-2">•</div>
+                            <div className="text-lg ">
                                 {userData.company}
                             </div>
                         </motion.div>
 
                         <motion.div
-                            className="flex items-center text-blue-200 mb-4"
+                            className={`flex items-center w-max p-2 rounded-2xl bg-gradient-to-br ${currentTheme.highlight} mb-4`}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 0.7 }}
@@ -274,7 +274,7 @@ const HeroSection = () => {
                         </motion.div>
 
                         <motion.p
-                            className="text-lg text-blue-100 max-w-3xl mb-6"
+                            className="text-lg  max-w-3xl mb-6"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 0.8 }}
@@ -293,7 +293,7 @@ const HeroSection = () => {
                                 <Badge
                                     key={index}
                                     variant="secondary"
-                                    className="px-3 py-1.5 gap-1.5 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors text-white"
+                                    className={`px-3 py-1.5 gap-1.5 bg-gradient-to-tl ${currentTheme.highlight} ${currentTheme.textGradient} backdrop-blur-md hover:bg-white/20 transition-colors`}
                                 >
                                     {badge.icon === "Trophy" && <Trophy size={16} />}
                                     {badge.icon === "FileCheck" && <FileCheck size={16} />}
@@ -303,21 +303,21 @@ const HeroSection = () => {
                             ))}
                             <Badge
                                 variant="secondary"
-                                className="px-3 py-1.5 gap-1.5 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors text-white"
+                                className={`px-3 bg-gradient-to-tl ${currentTheme.highlight} ${currentTheme.textGradient} py-1.5 gap-1.5 backdrop-blur-md hover:bg-white/20 transition-colors`}
                             >
                                 <Microscope size={16} />
                                 Lipid Nanoparticles
                             </Badge>
                             <Badge
                                 variant="secondary"
-                                className="px-3 py-1.5 gap-1.5 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors text-white"
+                                className={`px-3 bg-gradient-to-tl ${currentTheme.highlight} ${currentTheme.textGradient} py-1.5 gap-1.5 backdrop-blur-md hover:bg-white/20 transition-colors`}
                             >
                                 <FlaskConical size={16} />
                                 mRNA Therapeutics
                             </Badge>
                             <Badge
                                 variant="secondary"
-                                className="px-3 py-1.5 gap-1.5 bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors text-white"
+                                className={`px-3 bg-gradient-to-tl ${currentTheme.highlight} ${currentTheme.textGradient} py-1.5 gap-1.5 backdrop-blur-md hover:bg-white/20 transition-colors`}
                             >
                                 <BookOpen size={16} />
                                 8+ Publications
@@ -331,10 +331,10 @@ const HeroSection = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 1 }}
                         >
-                            <h3 className="text-sm uppercase text-blue-300 mb-2 font-semibold tracking-wider">Expertise</h3>
+                            <h3 className="text-sm uppercase mb-2 font-semibold tracking-wider">Expertise</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 {userData.skills.slice(0, 4).map((skill, index) => (
-                                    <div key={index} className="bg-white/5 rounded-lg p-3">
+                                    <div key={index} className={`bg-gradient-to-br ${currentTheme.highlight} rounded-lg p-3 shadow-lg`}>
                                         <div className="text-sm font-medium">{skill.name}</div>
                                         <div className="mt-1 h-2 bg-white/10 rounded-full overflow-hidden">
                                             <div
@@ -349,24 +349,24 @@ const HeroSection = () => {
 
                         {/* Action buttons */}
                         <motion.div
-                            className="flex flex-wrap gap-4"
+                            className={`flex flex-wrap gap-4 ${currentTheme.textGradient}`}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.7, delay: 1.1 }}
                         >
-                            <Button className={`bg-gradient-to-tl ${currentTheme.buttonGradient} text-white border-none hover:opacity-90 gap-2`}>
+                            <Button variant={'outline'} className={`bg-gradient-to-tl ${currentTheme.buttonGradient} border-none hover:opacity-90 gap-2`}>
                                 <UserPlus size={16} />
                                 Connect
                             </Button>
-                            <Button variant="outline" className={`border-white/30 bg-gradient-to-tl ${currentTheme.buttonGradient} hover:bg-white/10 text-white gap-2`}>
+                            <Button variant="outline" className={`border-white/30 bg-gradient-to-tl ${currentTheme.buttonGradient} hover:bg-white/10 gap-2`}>
                                 <Mail size={16} />
                                 Contact
                             </Button>
-                            <Button variant="outline" className={`border-white/30 bg-gradient-to-tl ${currentTheme.buttonGradient} hover:bg-white/10 text-white gap-2`}>
+                            <Button variant="outline" className={`border-white/30 bg-gradient-to-tl ${currentTheme.buttonGradient} hover:bg-white/10 gap-2`}>
                                 <Share2 size={16} />
                                 Share Profile
                             </Button>
-                            <Button variant="outline" className={`border-white/30 bg-gradient-to-tl ${currentTheme.buttonGradient} hover:bg-white/10 text-white gap-2`}>
+                            <Button variant="outline" className={`border-white/30 bg-gradient-to-tl ${currentTheme.buttonGradient} hover:bg-white/10 gap-2`}>
                                 <Award size={16} />
                                 View Patents
                             </Button>
@@ -376,7 +376,7 @@ const HeroSection = () => {
 
                 {/* Current research highlight */}
                 <motion.div
-                    className="mt-8 bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10"
+                    className="mt-8 bg-white/50 shadow-lg backdrop-blur-md rounded-xl p-4 border border-white/10"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 1.2 }}
@@ -385,7 +385,7 @@ const HeroSection = () => {
                         <Microscope className="mr-2" size={20} />
                         Current Research Focus
                     </h3>
-                    <p className="text-blue-100">
+                    <p className="">
                         Design and synthesis of various novel lipids and mRNA caps for targeted drug delivery systems.
                         Developing safe, stable, and effective LNP delivery systems to target cells and tissues.
                     </p>
@@ -403,7 +403,7 @@ const HeroSection = () => {
                         repeatDelay: 0.5
                     }}
                 >
-                    <div className="flex flex-col items-center gap-2 text-blue-200">
+                    <div className="flex flex-col items-center gap-2">
                         <Mouse size={24} />
                         <ArrowDown size={20} />
                         <span className="text-sm font-light">Scroll to explore full profile</span>

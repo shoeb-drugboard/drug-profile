@@ -22,16 +22,16 @@ const EducationSection = () => {
 
     // Helper to determine specialization type color
     const getSpecializationColor = (specialization: string) => {
-        if (specialization.toLowerCase().includes("clinical")) return "from-blue-500 to-blue-700";
-        if (specialization.toLowerCase().includes("research")) return "from-purple-500 to-purple-700";
-        if (specialization.toLowerCase().includes("analysis")) return "from-green-500 to-green-700";
-        return "from-amber-500 to-amber-700";
+        if (specialization.toLowerCase().includes("clinical")) return currentTheme.accent;
+        if (specialization.toLowerCase().includes("research")) return currentTheme.highlight;
+        if (specialization.toLowerCase().includes("analysis")) return currentTheme.secondary;
+        return currentTheme.primary;
     };
 
     return (
         <motion.section
             ref={ref}
-            className={`py-24 bg-gradient-to-b ${currentTheme.altSectionGradient} relative pt-24`}
+            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} relative pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -83,9 +83,9 @@ const EducationSection = () => {
                 >
                     <div className="flex items-center justify-center space-x-4 mb-4">
                         <Atom className={`${currentTheme.iconColor} w-7 h-7`} />
-                        <h2 className="text-3xl font-bold text-white">Scientific & Professional Qualifications</h2>
+                        <h2 className={`text-3xl font-bold ${currentTheme.textGradient}`}>Scientific & Professional Qualifications</h2>
                     </div>
-                    <p className="text-slate-300 max-w-2xl text-center">
+                    <p className="max-w-2xl text-center">
                         Educational background and specialized training in pharmaceutical research, clinical trials, and industry practices.
                     </p>
                 </motion.div>
@@ -97,7 +97,7 @@ const EducationSection = () => {
                     initial="hidden"
                     animate={inView ? "visible" : "hidden"}
                 >
-                    <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-transparent via-slate-500/30 to-transparent"></div>
+                    <div className={`absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b ${currentTheme.highlight} ${currentTheme.textGradient}`} />
 
                     {userData.education.map((edu, index) => {
                         const IconComponent = getDegreeIcon(edu.degree);
@@ -112,7 +112,7 @@ const EducationSection = () => {
                             >
                                 <div className={`w-full md:w-5/12 ${isEven ? 'md:text-right md:pr-12' : 'md:pl-12'}`}>
                                     <motion.div
-                                        className={`bg-slate-800/70 backdrop-blur-sm border border-${currentTheme.iconColor.replace('text-', '')}/20 rounded-xl p-6 shadow-lg transition-all ${isExpanded ? 'shadow-xl' : ''}`}
+                                        className={`backdrop-blur-sm border border-${currentTheme.iconColor.replace('text-', '')}/20 rounded-xl p-6 shadow-lg transition-all ${isExpanded ? 'shadow-xl' : ''}`}
                                         whileHover={{
                                             scale: isExpanded ? 1 : 1.02,
                                             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
@@ -120,24 +120,24 @@ const EducationSection = () => {
                                         onClick={() => setExpandedEdu(isExpanded ? null : index)}
                                     >
                                         <div className="flex justify-between items-start">
-                                            <h4 className="font-bold text-lg text-white mb-2">{edu.degree}</h4>
+                                            <h4 className={`font-bold text-lg ${currentTheme.textGradient} mb-2`}>{edu.degree}</h4>
                                             <motion.div
-                                                className={`${currentTheme.iconColor} bg-slate-700/50 rounded-full p-1 cursor-pointer`}
+                                                className={`${currentTheme.iconColor} bg-gradient-to-bl ${currentTheme.buttonGradient} rounded-full p-1 cursor-pointer`}
                                                 animate={{ rotate: isExpanded ? 180 : 0 }}
                                             >
                                                 {isExpanded ? <X size={16} /> : <ChevronDown size={16} />}
                                             </motion.div>
                                         </div>
-                                        <p className="text-slate-200 font-medium">{edu.institution}</p>
-                                        <p className="text-slate-400 text-sm mb-4">{edu.location} • {edu.duration}</p>
+                                        <p className={`${currentTheme.textGradient} font-medium`}>{edu.institution}</p>
+                                        <p className=" text-sm mb-4">{edu.location} • {edu.duration}</p>
 
                                         {/* Specialization tags - always visible */}
                                         {edu.specializations && (
-                                            <div className="flex flex-wrap gap-2 mt-3">
+                                            <div className={`flex flex-wrap gap-2 mt-3 ${currentTheme.accent}`}>
                                                 {edu.specializations.map((spec, i) => (
                                                     <span
                                                         key={i}
-                                                        className={`text-xs px-3 py-1 rounded-full bg-gradient-to-r ${getSpecializationColor(spec)} text-white`}
+                                                        className={`text-xs px-3 py-1 rounded-full bg-gradient-to-br ${getSpecializationColor(spec)} ${currentTheme.buttonGradient}`}
                                                     >
                                                         {spec}
                                                     </span>
@@ -158,19 +158,19 @@ const EducationSection = () => {
                                                     {edu.thesis && (
                                                         <div className={`mt-4 pt-3 border-t border-${currentTheme.iconColor.replace('text-', '')}/20`}>
                                                             <div className="flex items-start gap-2">
-                                                                <PenTool size={16} className={currentTheme.iconColor + " mt-1 flex-shrink-0"} />
-                                                                <div>
-                                                                    <span className="font-medium text-white">Research:</span>
-                                                                    <p className="text-slate-300">{edu.thesis}</p>
+                                                                <PenTool size={16} className={`${currentTheme.iconColor} mt-1 flex-shrink-0`} />
+                                                                <div className="text-left">
+                                                                    <span className={`font-medium ${currentTheme.textGradient}`}>Research:</span>
+                                                                    <p className="text-left">{edu.thesis}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     )}
 
                                                     {/* Additional expanded content */}
-                                                    <div className={`mt-4 pt-3 border-t border-${currentTheme.iconColor.replace('text-', '')}/20`}>
-                                                        <h5 className="text-white font-medium mb-2">Key Achievements</h5>
-                                                        <ul className="text-slate-300 space-y-1 list-disc pl-5">
+                                                    <div className={`mt-4 text-left pt-3 border-t border-${currentTheme.iconColor.replace('text-', '')}/20 ${currentTheme.textGradient}`}>
+                                                        <h5 className={` font-medium mb-2`}>Key Achievements</h5>
+                                                        <ul className="space-y-1 list-disc pl-5 text-left">
                                                             <li>Top researcher in the department</li>
                                                             <li>Published {Math.floor(Math.random() * 3) + 1} papers during candidacy</li>
                                                             <li>Collaborated with leading industry partners</li>
@@ -183,7 +183,7 @@ const EducationSection = () => {
                                 </div>
 
                                 <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
-                                    <div className={`w-16 h-16 rounded-full bg-slate-900 border-4 border-${currentTheme.iconColor.replace('text-', '')}/50 flex items-center justify-center z-10`}>
+                                    <div className={`w-16 h-16 rounded-full bg-gradient-to-bl ${currentTheme.buttonGradient} ${currentTheme.iconColor} border-4 border-${currentTheme.buttonGradient.replace('text-', '')}/50 flex items-center justify-center z-10`}>
                                         <IconComponent className={`${currentTheme.iconColor} w-6 h-6`} />
                                     </div>
                                 </div>
@@ -202,7 +202,7 @@ const EducationSection = () => {
                     animate={inView ? "visible" : "hidden"}
                     transition={{ delay: 0.3 }}
                 >
-                    <h3 className="text-2xl font-semibold text-white mb-8 text-center flex items-center justify-center gap-3">
+                    <h3 className={`text-2xl font-semibold ${currentTheme.textGradient} mb-8 text-center flex items-center justify-center gap-3`}>
                         <Award className={currentTheme.iconColor} />
                         <span>Industry Certifications & Specialized Training</span>
                     </h3>
@@ -213,8 +213,8 @@ const EducationSection = () => {
                             return (
                                 <motion.div
                                     key={index}
-                                    className={`bg-gradient-to-br from-slate-800/70 to-slate-900/70 backdrop-blur-sm 
-                                        border border-slate-700/30 rounded-lg p-6 text-white relative overflow-hidden
+                                    className={`bg-gradient-to-br ${currentTheme.altSectionGradient} backdrop-blur-sm 
+                                        border border-${currentTheme.iconColor.replace('text-', '')}/30 rounded-lg p-6 text-white relative overflow-hidden
                                         ${isExpanded ? 'md:col-span-3 shadow-2xl' : ''}`}
                                     whileHover={{ y: -5, boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.4)" }}
                                     transition={{ duration: 0.2 }}
@@ -224,7 +224,7 @@ const EducationSection = () => {
                                     <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-br ${currentTheme.buttonGradient} 
                                         -translate-y-1/2 translate-x-1/2 rotate-45 transform-gpu`} />
 
-                                    <div className="flex justify-between">
+                                    <div className={`flex justify-between ${currentTheme.textGradient}`}>
                                         <div className="flex gap-4 items-start">
                                             <div className={`${currentTheme.iconColor.replace('text-', 'bg-')}/20 p-3 rounded-full ${currentTheme.iconColor}`}>
                                                 {cert.type === 'clinical' ? <Microscope size={20} /> :
@@ -233,11 +233,11 @@ const EducationSection = () => {
                                                             <Briefcase size={20} />}
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-white">{cert.name}</h4>
-                                                <p className="text-sm text-slate-300 mt-1">
+                                                <h4 className={`font-semibold ${currentTheme.textGradient}`}>{cert.name}</h4>
+                                                <p className="text-sm mt-1">
                                                     {cert.issuer}
                                                 </p>
-                                                <div className="flex items-center gap-2 text-xs text-slate-400 mt-2">
+                                                <div className="flex items-center gap-2 text-xs  mt-2">
                                                     <span>{cert.year}</span>
                                                     {cert.accreditation && (
                                                         <>
@@ -249,7 +249,7 @@ const EducationSection = () => {
                                             </div>
                                         </div>
                                         <motion.div
-                                            className={`${currentTheme.iconColor} bg-slate-700/50 rounded-full p-1 cursor-pointer mt-1`}
+                                            className={`${currentTheme.iconColor} bg-gradient-to-bl ${currentTheme.highlight} rounded-full p-1 h-max cursor-pointer mt-1`}
                                             animate={{ rotate: isExpanded ? 180 : 0 }}
                                         >
                                             {isExpanded ? <X size={16} /> : <ChevronDown size={16} />}
@@ -266,16 +266,16 @@ const EducationSection = () => {
                                                 transition={{ duration: 0.3 }}
                                                 className="mt-6 pt-4 border-t border-slate-700/30 overflow-hidden"
                                             >
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${currentTheme.textGradient} ${currentTheme.accent}`}>
                                                     <div>
-                                                        <h5 className="text-white font-medium mb-3">Program Details</h5>
-                                                        <p className="text-slate-300 mb-4">
+                                                        <h5 className={`${currentTheme.textGradient} font-medium mb-3`}>Program Details</h5>
+                                                        <p className="mb-4">
                                                             This comprehensive program covers advanced techniques and methodologies in {cert.type}
                                                             with hands-on training and industry best practices.
                                                         </p>
 
-                                                        <h6 className="text-white font-medium mb-2">Key Topics:</h6>
-                                                        <ul className="list-disc pl-5 text-slate-300 space-y-1">
+                                                        <h6 className={`${currentTheme.textGradient} font-medium mb-2`}>Key Topics:</h6>
+                                                        <ul className="list-disc pl-5 space-y-1">
                                                             <li>Advanced techniques in {cert.type === 'research' ? 'molecular modeling' :
                                                                 cert.type === 'clinical' ? 'clinical trials' :
                                                                     cert.type === 'regulatory' ? 'regulatory compliance' : 'business analysis'}</li>
@@ -284,13 +284,13 @@ const EducationSection = () => {
                                                         </ul>
                                                     </div>
 
-                                                    <div className="bg-slate-800/50 rounded-lg p-4">
-                                                        <h5 className="text-white font-medium mb-3">Certification Value</h5>
+                                                    <div className={`bg-${currentTheme.iconColor.replace('text-', '')}/20 rounded-lg p-4 ${currentTheme.textGradient}`}>
+                                                        <h5 className={`${currentTheme.textGradient} font-medium mb-3`}>Certification Value</h5>
                                                         <div className="space-y-3">
                                                             <div>
                                                                 <div className="flex justify-between text-sm mb-1">
-                                                                    <span className="text-slate-300">Industry Recognition</span>
-                                                                    <span className="text-slate-200">95%</span>
+                                                                    <span className="">Industry Recognition</span>
+                                                                    <span className="">95%</span>
                                                                 </div>
                                                                 <div className="w-full bg-slate-700/50 rounded-full h-2">
                                                                     <div className={`h-2 rounded-full bg-gradient-to-r ${currentTheme.buttonGradient}`} style={{ width: "95%" }}></div>
@@ -299,8 +299,8 @@ const EducationSection = () => {
 
                                                             <div>
                                                                 <div className="flex justify-between text-sm mb-1">
-                                                                    <span className="text-slate-300">Skill Enhancement</span>
-                                                                    <span className="text-slate-200">87%</span>
+                                                                    <span className="">Skill Enhancement</span>
+                                                                    <span className="">87%</span>
                                                                 </div>
                                                                 <div className="w-full bg-slate-700/50 rounded-full h-2">
                                                                     <div className={`h-2 rounded-full bg-gradient-to-r ${currentTheme.buttonGradient}`} style={{ width: "87%" }}></div>
@@ -309,8 +309,8 @@ const EducationSection = () => {
 
                                                             <div>
                                                                 <div className="flex justify-between text-sm mb-1">
-                                                                    <span className="text-slate-300">Career Advancement</span>
-                                                                    <span className="text-slate-200">90%</span>
+                                                                    <span className="">Career Advancement</span>
+                                                                    <span className="">90%</span>
                                                                 </div>
                                                                 <div className="w-full bg-slate-700/50 rounded-full h-2">
                                                                     <div className={`h-2 rounded-full bg-gradient-to-r ${currentTheme.buttonGradient}`} style={{ width: "90%" }}></div>

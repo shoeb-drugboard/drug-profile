@@ -17,8 +17,6 @@ const StatsOverview = () => {
     const inView = useInView(ref, { once: false, amount: 0.2 });
     const { currentTheme } = useTheme();
 
-    // Add padding to account for the navigation bar
-    const topPadding = "pt-16";
 
     const statsContainerVariants = {
         hidden: { opacity: 0 },
@@ -46,12 +44,12 @@ const StatsOverview = () => {
 
     // Colors for stats cards based on the current theme
     const colorMap = {
-        publications: currentTheme.secondary,
-        patents: currentTheme.accent,
+        publications: currentTheme.buttonGradient,
+        patents: currentTheme.buttonGradient,
         citations: currentTheme.buttonGradient,
-        presentations: currentTheme.highlight,
-        collaborators: currentTheme.secondary,
-        contributions: currentTheme.accent,
+        presentations: currentTheme.buttonGradient,
+        collaborators: currentTheme.buttonGradient,
+        contributions: currentTheme.buttonGradient,
     };
 
     const stats = [
@@ -66,14 +64,14 @@ const StatsOverview = () => {
     return (
         <motion.div
             ref={ref}
-            className={`grid items-center h-[600px] bg-gradient-to-b ${currentTheme.sectionGradient} ${topPadding}`}
+            className={`grid items-center h-[600px] bg-gradient-to-b ${currentTheme.sectionGradient} ${currentTheme.textGradient}`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
         >
             <div className="container mx-auto px-4">
                 <motion.h2
-                    className="text-3xl font-bold text-center mb-12 text-white"
+                    className={`text-3xl font-bold text-center mb-12 ${currentTheme.textGradient}`}
                     variants={fadeInUpVariants}
                 >
                     Research Impact & Achievements
@@ -88,20 +86,20 @@ const StatsOverview = () => {
                     {stats.map((stat, index) => (
                         <motion.div
                             key={index}
-                            className="bg-slate-800/50 backdrop-blur-md rounded-xl p-6 text-center border border-slate-700 shadow-lg"
+                            className={`bg-gradient-to-tr ${currentTheme.highlight} backdrop-blur-md rounded-xl p-6 text-center border border-slate-700 shadow-lg ${currentTheme.textGradient}`}
                             variants={statItemVariants}
                             whileHover={{ y: -5, transition: { duration: 0.2 } }}
                         >
                             <div className={`mx-auto w-14 h-14 rounded-full mb-4 flex items-center justify-center bg-gradient-to-br ${stat.color}`}>
                                 {stat.icon}
                             </div>
-                            <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                            <div className="text-slate-400 text-sm">{stat.label}</div>
+                            <div className="text-3xl font-bold mb-1">{stat.value}</div>
+                            <div className=" text-sm">{stat.label}</div>
                         </motion.div>
                     ))}
                 </motion.div>
-            </div>
-        </motion.div>
+            </div >
+        </motion.div >
     );
 };
 

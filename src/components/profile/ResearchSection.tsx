@@ -24,14 +24,14 @@ const ResearchSection = () => {
     return (
         <motion.section
             ref={ref}
-            className={`py-24 bg-gradient-to-b ${currentTheme.altSectionGradient} pt-24`}
+            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} ${currentTheme.textGradient} pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
         >
             <div className="container mx-auto px-4">
                 <motion.h2
-                    className="text-3xl font-bold text-center mb-16 text-white"
+                    className="text-3xl font-bold text-center mb-16"
                     variants={fadeInUpVariants}
                 >
                     Research & Intellectual Property
@@ -41,9 +41,9 @@ const ResearchSection = () => {
                     className="mb-12 flex justify-center"
                     variants={fadeInUpVariants}
                 >
-                    <div className="bg-slate-800/50 backdrop-blur-md rounded-full p-1 border border-slate-700/50 inline-flex">
+                    <div className={`bg-gradient-to-br ${currentTheme.highlight} backdrop-blur-md rounded-full p-1 border border-slate-700/50 inline-flex`}>
                         <motion.button
-                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "publications" ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white` : "text-slate-300"}`}
+                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "publications" ? `bg-gradient-to-r ${currentTheme.buttonGradient} ${currentTheme.textGradient}` : "text-slate-900"}`}
                             variants={tabVariants}
                             animate={activeTab === "publications" ? "active" : "inactive"}
                             onClick={() => setActiveTab("publications")}
@@ -51,7 +51,7 @@ const ResearchSection = () => {
                             Publications
                         </motion.button>
                         <motion.button
-                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "patents" ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white` : "text-slate-300"}`}
+                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "patents" ? `bg-gradient-to-r ${currentTheme.buttonGradient} ${currentTheme.textGradient}` : "text-slate-900"}`}
                             variants={tabVariants}
                             animate={activeTab === "patents" ? "active" : "inactive"}
                             onClick={() => setActiveTab("patents")}
@@ -59,7 +59,7 @@ const ResearchSection = () => {
                             Patents
                         </motion.button>
                         <motion.button
-                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "presentations" ? `bg-gradient-to-r ${currentTheme.buttonGradient} text-white` : "text-slate-300"}`}
+                            className={`px-6 py-2 rounded-full text-sm font-medium ${activeTab === "presentations" ? `bg-gradient-to-r ${currentTheme.buttonGradient} ${currentTheme.textGradient}` : "text-slate-900"}`}
                             variants={tabVariants}
                             animate={activeTab === "presentations" ? "active" : "inactive"}
                             onClick={() => setActiveTab("presentations")}
@@ -89,7 +89,7 @@ const ResearchSection = () => {
                                         y: -5,
                                         boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
                                     }}
-                                    className="bg-slate-800/70 backdrop-blur-md rounded-lg border border-slate-700 overflow-hidden shadow-lg"
+                                    className="bg-slate-800/90 backdrop-blur-md rounded-lg border border-slate-700 overflow-hidden shadow-lg"
                                 >
                                     <div className={`h-2 bg-gradient-to-r ${currentTheme.buttonGradient}`} />
                                     <div className="p-6">

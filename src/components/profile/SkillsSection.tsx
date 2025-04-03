@@ -12,7 +12,7 @@ const SkillsSection = () => {
     return (
         <motion.section
             ref={ref}
-            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} overflow-hidden relative pt-24`}
+            className={`py-24 bg-gradient-to-b ${currentTheme.secondary} ${currentTheme.textGradient} overflow-hidden relative pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -44,7 +44,7 @@ const SkillsSection = () => {
 
             <div className="container mx-auto px-4 relative z-10">
                 <motion.h2
-                    className="text-3xl font-bold text-center mb-16 text-white"
+                    className="text-3xl font-bold text-center mb-16"
                     variants={fadeInUpVariants}
                 >
                     Expertise & Skills
@@ -58,16 +58,16 @@ const SkillsSection = () => {
                         {userData.skills.map((skill, index) => (
                             <motion.div
                                 key={index}
-                                className="space-y-2"
+                                className={`space-y-2 ${currentTheme.textGradient}`}
                                 initial={{ opacity: 0, x: -50 }}
                                 animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                             >
-                                <div className="flex justify-between text-white">
+                                <div className="flex justify-between">
                                     <span className="font-medium">{skill.name}</span>
                                     <span>{skill.level}%</span>
                                 </div>
-                                <div className="relative h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div className="relative h-2 bg-slate-700/10 rounded-full overflow-hidden">
                                     <motion.div
                                         className={`absolute inset-y-0 left-0 bg-gradient-to-r ${currentTheme.buttonGradient} rounded-full`}
                                         initial={{ width: 0 }}
@@ -85,8 +85,8 @@ const SkillsSection = () => {
                         animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
                         transition={{ duration: 0.5, delay: 0.4 }}
                     >
-                        <div className="bg-slate-800/80 backdrop-blur-lg p-6 border border-slate-700">
-                            <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                        <div className={`bg-slate-800/80 backdrop-blur-lg p-6 border border-slate-700 ${currentTheme.name === 'Clinical White' ? 'text-white' : `${currentTheme.textGradient}`}`}>
+                            <h3 className="text-xl font-semibold  mb-6 flex items-center gap-2">
                                 <Target size={20} className={currentTheme.iconColor} />
                                 Impact Breakdown
                             </h3>
@@ -100,7 +100,7 @@ const SkillsSection = () => {
                                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                                         transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
                                     >
-                                        <div className="flex justify-between text-white">
+                                        <div className="flex justify-between">
                                             <span>{item.category}</span>
                                             <span className="font-semibold">{item.score} pts</span>
                                         </div>
@@ -116,11 +116,11 @@ const SkillsSection = () => {
                                 ))}
                             </div>
 
-                            <div className="mt-8 p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                            <div className={`mt-8 p-4 bg-slate-900/50 rounded-lg border border-slate-700`}>
                                 <div className="text-center">
                                     <div className={`text-4xl font-bold ${currentTheme.iconColor} mb-1`}>{userData.impactScore}</div>
-                                    <div className="text-slate-300 text-sm">Total Impact Score</div>
-                                    <div className="text-blue-300 text-xs mt-1">Top 5% in Medicinal Chemistry</div>
+                                    <div className=" text-sm">Total Impact Score</div>
+                                    <div className=" text-xs mt-1">Top 5% in Medicinal Chemistry</div>
                                 </div>
                             </div>
                         </div>

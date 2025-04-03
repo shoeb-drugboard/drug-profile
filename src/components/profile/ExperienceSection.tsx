@@ -23,7 +23,7 @@ const ExperienceSection = () => {
     return (
         <motion.section
             ref={ref}
-            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} relative overflow-hidden pt-24`}
+            className={`py-24 bg-gradient-to-br ${currentTheme.sectionGradient} ${currentTheme.textGradient} relative overflow-hidden pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
@@ -45,7 +45,7 @@ const ExperienceSection = () => {
 
             <div className="container mx-auto px-4 relative z-10">
                 <motion.h2
-                    className="text-3xl font-bold text-center mb-16 text-white"
+                    className="text-3xl font-bold text-center mb-16"
                     variants={fadeInUpVariants}
                 >
                     Professional Journey
@@ -79,7 +79,7 @@ const ExperienceSection = () => {
 
                                 {/* Leaf node */}
                                 <motion.div
-                                    className={`absolute top-6 w-6 h-6 rounded-full ${currentTheme.iconColor.replace('text-', 'bg-')} border-2 border-white z-10 ${index % 2 === 0 ? 'right-0 -mr-3' : 'left-0 -ml-3'}`}
+                                    className={`absolute top-6 w-6 h-6 rounded-full bg-gradient-to-b ${currentTheme.accent} border-2 border-white z-10 ${index % 2 === 0 ? 'right-0 -mr-3' : 'left-0 -ml-3'}`}
                                     initial={{ scale: 0 }}
                                     animate={inView ? { scale: 1 } : { scale: 0 }}
                                     transition={{ duration: 0.4, delay: 0.6 + index * 0.3 }}
@@ -87,7 +87,7 @@ const ExperienceSection = () => {
 
                                 {/* Accordion 3D Card */}
                                 <motion.div
-                                    className={`p-6 rounded-xl bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg border border-${currentTheme.iconColor.replace('text-', '')}/50 text-white shadow-xl overflow-hidden transition-all duration-300 ${expandedIndex === index ? `border-${currentTheme.iconColor.replace('text-', '')}/70` : ''}`}
+                                    className={`p-6 rounded-xl bg-gradient-to-bl ${currentTheme.accent} backdrop-blur-xl border border-${currentTheme.iconColor.replace('text-', '')}/50 ${currentTheme.textGradient} shadow-lg overflow-hidden transition-all duration-300 ${expandedIndex === index ? `border-${currentTheme.iconColor.replace('text-', '')}/70` : ''}`}
                                     onClick={() => toggleExpand(index)}
                                     whileHover={{
                                         y: -5,
@@ -97,19 +97,19 @@ const ExperienceSection = () => {
                                     layout
                                 >
                                     {/* Card top decoration - leaf shapes */}
-                                    <div className={`absolute -top-1 left-0 right-0 h-1 bg-gradient-to-r from-${currentTheme.iconColor.replace('text-', '')}/0 via-${currentTheme.iconColor.replace('text-', '')} to-${currentTheme.iconColor.replace('text-', '')}/0`}></div>
-                                    <div className={`absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-${currentTheme.iconColor.replace('text-', '')}/0 via-${currentTheme.iconColor.replace('text-', '')} to-${currentTheme.iconColor.replace('text-', '')}/0 transform -translate-y-1/2`}></div>
+                                    <div className={`absolute -top-1 left-0 right-0 h-1 bg-gradient-to-r ${currentTheme.highlight} `}></div>
+                                    <div className={`absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r ${currentTheme.accent} transform -translate-y-1/2`}></div>
 
                                     {/* Duration pill */}
-                                    <div className="absolute top-0 right-3 transform">
-                                        <div className={`bg-gradient-to-r ${currentTheme.buttonGradient} text-white text-xs font-bold rounded-full px-3 py-1 shadow-md`}>
+                                    <div className="absolute top-2 right-3 transform">
+                                        <div className={`bg-gradient-to-br ${currentTheme.accent} ${currentTheme.textGradient} text-xs font-bold rounded-full px-3 py-1 shadow-md`}>
                                             {exp.duration}
                                         </div>
                                     </div>
 
                                     <div className="pt-2">
                                         <div className="flex justify-between items-center mb-2">
-                                            <h4 className="font-bold text-xl text-white">{exp.role}</h4>
+                                            <h4 className={`font-bold text-xl ${currentTheme.textGradient}`}>{exp.role}</h4>
                                             <motion.div
                                                 animate={{ rotate: expandedIndex === index ? 180 : 0 }}
                                                 className={`${currentTheme.iconColor.replace('text-', 'bg-')}/20 rounded-full p-1 cursor-pointer`}
@@ -118,7 +118,7 @@ const ExperienceSection = () => {
                                             </motion.div>
                                         </div>
 
-                                        <div className="flex items-center text-slate-300 mb-4 gap-1">
+                                        <div className="flex items-center mb-4 gap-1">
                                             <Briefcase size={16} className={currentTheme.iconColor} />
                                             <span>{exp.company}, {exp.location}</span>
                                         </div>
@@ -131,17 +131,17 @@ const ExperienceSection = () => {
                                                     animate={{ opacity: 1, height: "auto" }}
                                                     exit={{ opacity: 0, height: 0 }}
                                                     transition={{ duration: 0.3 }}
-                                                    className="overflow-hidden"
+                                                    className={`overflow-hidden ${currentTheme.textGradient}`}
                                                 >
                                                     {/* Content that appears when expanded */}
                                                     <div className={`mt-4 border-t border-${currentTheme.iconColor.replace('text-', '')}/30 pt-4`}>
-                                                        <p className="text-slate-300">{exp.description}</p>
+                                                        <p className="">{exp.description}</p>
 
                                                         {/* Additional details section */}
                                                         <div className="mt-4 grid grid-cols-1 gap-3">
                                                             <div className={`bg-${currentTheme.iconColor.replace('text-', '')}/20 p-3 rounded-lg border border-${currentTheme.iconColor.replace('text-', '')}/20`}>
-                                                                <h5 className="text-white text-sm font-semibold mb-2">Key Responsibilities</h5>
-                                                                <ul className="list-disc list-inside text-slate-300 text-sm space-y-1">
+                                                                <h5 className="${currentTheme.textGradient} text-sm font-semibold mb-2">Key Responsibilities</h5>
+                                                                <ul className="list-disc list-inside  text-sm space-y-1">
                                                                     {[1, 2, 3].map(item => (
                                                                         <li key={item} className="text-sm">
                                                                             {`Sample responsibility ${item} for ${exp.role}`}
@@ -151,10 +151,10 @@ const ExperienceSection = () => {
                                                             </div>
 
                                                             <div className={`bg-${currentTheme.iconColor.replace('text-', '')}/20 p-3 rounded-lg border border-${currentTheme.iconColor.replace('text-', '')}/20`}>
-                                                                <h5 className="text-white text-sm font-semibold mb-2">Technologies Used</h5>
+                                                                <h5 className="${currentTheme.textGradient} text-sm font-semibold mb-2">Technologies Used</h5>
                                                                 <div className="flex flex-wrap gap-2">
                                                                     {['React', 'TypeScript', 'Node.js'].map(tech => (
-                                                                        <span key={tech} className={`px-2 py-1 bg-${currentTheme.iconColor.replace('text-', '')}/30 text-white text-xs rounded-full`}>
+                                                                        <span key={tech} className={`px-2 py-1 bg-${currentTheme.iconColor.replace('text-', '')}/30 ${currentTheme.textGradient} text-xs rounded-full`}>
                                                                             {tech}
                                                                         </span>
                                                                     ))}
@@ -168,7 +168,7 @@ const ExperienceSection = () => {
 
                                         {/* Gradient leaf-like decoration at bottom when collapsed */}
                                         {expandedIndex !== index && (
-                                            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
+                                            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900/10 to-transparent"></div>
                                         )}
                                     </div>
                                 </motion.div>

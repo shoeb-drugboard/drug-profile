@@ -13,14 +13,14 @@ const RecentActivitySection = () => {
     return (
         <motion.section
             ref={ref}
-            className={`py-24 bg-gradient-to-b ${currentTheme.altSectionGradient} pt-24`}
+            className={`py-24 bg-gradient-to-b ${currentTheme.altSectionGradient} ${currentTheme.textGradient} pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
         >
             <div className="container mx-auto px-4">
                 <motion.h2
-                    className="text-3xl font-bold text-center mb-16 text-white"
+                    className="text-3xl font-bold text-center mb-16"
                     variants={fadeInUpVariants}
                 >
                     Recent Activity
@@ -47,8 +47,8 @@ const RecentActivitySection = () => {
                                     whileHover={{ x: 5 }}
                                 >
                                     <div className="flex gap-4">
-                                        <div className={`p-2 rounded-full 
-                                          ${activity.type === 'publication' ? `${currentTheme.iconColor.replace('text-', 'bg-')}/30 ${currentTheme.iconColor}` :
+                                        <div className={`p-4 flex justify-center items-center rounded-full bg-gradient-to-br ${currentTheme.accent} 
+                                          ${activity.type === 'publication' ? ` ${currentTheme.iconColor}` :
                                                 activity.type === 'webinar' ? `${currentTheme.iconColor.replace('text-', 'bg-')}/30 ${currentTheme.iconColor}` :
                                                     activity.type === 'forum' ? `${currentTheme.iconColor.replace('text-', 'bg-')}/30 ${currentTheme.iconColor}` :
                                                         `${currentTheme.iconColor.replace('text-', 'bg-')}/30 ${currentTheme.iconColor}`}`}>

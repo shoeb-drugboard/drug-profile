@@ -15,14 +15,14 @@ const RelatedResearchersSection = () => {
     return (
         <motion.section
             ref={ref}
-            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} pt-24`}
+            className={`py-24 bg-gradient-to-b ${currentTheme.sectionGradient} ${currentTheme.textGradient} pt-24`}
             variants={fadeInVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
         >
             <div className="container mx-auto px-4">
                 <motion.h2
-                    className="text-3xl font-bold text-center mb-16 text-white"
+                    className="text-3xl font-bold text-center mb-16"
                     variants={fadeInUpVariants}
                 >
                     Connect with Related Researchers
@@ -37,7 +37,7 @@ const RelatedResearchersSection = () => {
                     {relatedResearchers.map((researcher) => (
                         <motion.div
                             key={researcher.id}
-                            className="bg-slate-800/70 backdrop-blur-md border border-slate-700/50 rounded-lg p-6"
+                            className={`bg-gradient-to-br ${currentTheme.buttonGradient} backdrop-blur-md border border-slate-700/50 rounded-lg p-6`}
                             variants={fadeInUpVariants}
                             whileHover={{
                                 y: -5,
@@ -45,20 +45,20 @@ const RelatedResearchersSection = () => {
                             }}
                         >
                             <div className="flex flex-col items-center text-center">
-                                <Avatar className={`h-20 w-20 mb-4 border-2 border-opacity-30 ${currentTheme.iconColor.replace('text-', 'border-')}`}>
+                                <Avatar className={`h-20 w-20 mb-4 border-2 border-opacity-30`}>
                                     <AvatarImage src={researcher.avatar} alt={researcher.name} />
                                     <AvatarFallback className={`bg-gradient-to-br ${currentTheme.accent}`}>
                                         {researcher.name.split(' ').map(n => n[0]).join('')}
                                     </AvatarFallback>
                                 </Avatar>
                                 <h4 className="font-semibold text-lg text-white mb-1">{researcher.name}</h4>
-                                <p className="text-slate-400 text-sm mb-3">{researcher.title}</p>
+                                <p className=" text-sm mb-3">{researcher.title}</p>
 
-                                <Badge variant="outline" className={`${currentTheme.iconColor.replace('text-', 'bg-')}/30 ${currentTheme.iconColor} border-opacity-50 border mb-4`}>
+                                <Badge variant="outline" className={`bg-gradient-to-b ${currentTheme.highlight} ${currentTheme.iconColor} border-opacity-50 border mb-4`}>
                                     {researcher.match}% match
                                 </Badge>
 
-                                <Button size="sm" className={`gap-2 bg-gradient-to-r ${currentTheme.buttonGradient} hover:opacity-90 border-none`}>
+                                <Button size="sm" className={`gap-2 bg-gradient-to-br ${currentTheme.accent} hover:opacity-50 border-none`}>
                                     <UserPlus size={14} />
                                     Connect
                                 </Button>
@@ -67,7 +67,7 @@ const RelatedResearchersSection = () => {
                     ))}
                 </motion.div>
             </div>
-        </motion.section>
+        </motion.section >
     );
 };
 

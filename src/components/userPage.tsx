@@ -18,7 +18,7 @@ const UserPage = () => {
 
     // Create scroll animations for each section
     return (
-        <div className={`min-h-screen space-y-0 bg-black text-white`}>
+        <div className={`min-h-screen bg-gradient-to-b space-y-0 ${currentTheme.name === "Clinical White" ? 'bg-white' : `${currentTheme.secondary} text-white`}`}>
             <FloatingMolecules
                 count={12}
                 color={`var(--${currentTheme.iconColor.replace('text-', '')})`}
@@ -95,7 +95,7 @@ const UserPage = () => {
             </section>
 
             {/* Footer */}
-            <footer className={`py-8 text-center text-slate-400`}>
+            <footer className={`py-8 text-center`}>
                 <div className="container mx-auto px-4">
                     <p>© {new Date().getFullYear()} User Profile. All rights reserved.</p>
                 </div>
